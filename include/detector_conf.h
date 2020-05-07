@@ -14,7 +14,7 @@
 #define F2_PPAC_ADDR 0X0000
 
 //set F3 module address
-#define F3_PPAC_ADDR 0x0001
+#define F3_PPAC_ADDR 0x000D
 #define F3_PLASTIC_ADDR 0x0005
 #define F3_SILICON_ADDR 0x000F
 
