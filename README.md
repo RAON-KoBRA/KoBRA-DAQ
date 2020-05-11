@@ -1,5 +1,5 @@
 # KoBRA DAQ
-   Based on the MIDAS library, KoBRA DAQ h
+   Based on the MIDAS library, KoBR
  
  ## MIDAS 개요
  
