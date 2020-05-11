@@ -1,5 +1,5 @@
 # KoBRA DAQ
-   KoBRS DAQ는 MIDAS를 기반으로 
+   Based on the MIDAS library, KoBRA DAQ h
  
  ## MIDAS 개요
  
