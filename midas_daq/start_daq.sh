@@ -14,6 +14,8 @@ gnome-terminal -e ./analyzer &
 #./frontend &
 mlogger -D
 
+~/packages/roody/bin/roody -Hlocalhost
+
 echo Please point your web browser to http://kobradaq.test:8081
 echo run: firefox http://kobradaq.test:8081 &
 echo To look at live histogram, run: roody -Hlocalhost
