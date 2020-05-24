@@ -16,6 +16,11 @@
  p.s. 최신 Midas와 Ubuntu apt 상에 있는 Mongoose web server 버전 차이로 인해 암호화 문제가 발생한다. 이로 인해, 구 mhttpd 를 사용중이다.  
 
 
+## Update(2020-05-22)
+
+  A main shell file (Start DAQ) has updated: Online analysis is now functional, and the Roody window will be appeard while running the Start_daq.sh.  (Realtime plot seems nominal) 
+
+
 ### Operation environment
 
     Ubuntu 18.04.4 LTS
