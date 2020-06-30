@@ -25,6 +25,11 @@
     cmake version 3.17.1
 
 
+ ## 업데이트(2020-06-30)
+ 
+V2718 VME bridge의 Daisy chian 연결(optical link)을 위해 Identification 부분을 수정함. 현재 PPAC edge correction 부분은 소거된 상태로, 차후 한번에 업데이트  
+
+
 ## References
 - [MIDAS wiki]( https://midas.triumf.ca/MidasWiki/index.php/Main_Page)
 
