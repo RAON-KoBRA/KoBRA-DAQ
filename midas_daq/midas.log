@@ -1,0 +1,12 @@
+10:11:41.723 2018/11/02 [ODBEdit,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:11:43.738 2018/11/02 [Logger,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:12:38.316 2018/11/02 [ODBEdit,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:12:40.327 2018/11/02 [Logger,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:13:59.029 2018/11/02 [ODBEdit,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:14:01.042 2018/11/02 [Logger,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:15:05.151 2018/11/02 [ODBEdit,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+10:15:07.163 2018/11/02 [Logger,ERROR] [system.c:715:ss_shm_open,ERROR] Cannot create shared memory segment '/kobra_test_ODB_SHM', shm_open() errno 13 (Permission denied)
+09:41:39.630 2020/06/22 [mhttpd,INFO] Program mhttpd on host localhost stopped
+09:41:39.730 2020/06/22 [frontend,INFO] Program frontend on host localhost stopped
+09:41:39.837 2020/06/22 [Analyzer,INFO] Program Analyzer on host localhost stopped
+09:41:44.302 2020/06/22 [mhttpd,INFO] Program mhttpd on host localhost started

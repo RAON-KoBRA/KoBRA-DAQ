@@ -1,0 +1,334 @@
+00:06:17.294 2018/08/08 [ODBEdit,ERROR] [odb.c:1434:db_open_database,ERROR] Removed ODB client 'mhttpd', index 0 because process pid 5164 does not exists
+00:06:17.294 2018/08/08 [ODBEdit,ERROR] [odb.c:1434:db_open_database,ERROR] Removed ODB client 'Logger', index 1 because process pid 5171 does not exists
+00:06:17.295 2018/08/08 [ODBEdit,ERROR] [odb.c:1434:db_open_database,ERROR] Removed ODB client 'frontend', index 2 because process pid 5186 does not exists
+00:06:17.377 2018/08/08 [mhttpd,INFO] Deleted entry '/System/Clients/5171' for client 'Logger' because it is not connected to ODB
+00:06:17.377 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:06:19.400 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:06:20.712 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:06:26.397 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:06:57.631 2018/08/08 [mhttpd,INFO] Run #9 stopped
+00:07:12.750 2018/08/08 [mhttpd,INFO] Run #10 started
+00:07:32.538 2018/08/08 [mhttpd,INFO] Run #10 stopped
+00:22:05.817 2018/08/08 [mhttpd,INFO] Run #11 started
+00:22:23.387 2018/08/08 [mhttpd,INFO] Run #11 stopped
+00:22:40.794 2018/08/08 [mhttpd,INFO] Run #12 started
+00:22:48.288 2018/08/08 [mhttpd,INFO] Run #12 stopped
+00:23:14.863 2018/08/08 [mhttpd,INFO] Run #13 started
+00:24:05.682 2018/08/08 [mhttpd,INFO] Run #13 stopped
+00:24:12.077 2018/08/08 [mhttpd,INFO] Run #14 started
+00:25:01.887 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:25:01.888 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:25:01.888 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:25:01.888 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:25:02.571 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:25:02.805 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:25:27.755 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:25:29.758 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:25:29.935 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:25:29.935 2018/08/08 [frontend,ERROR] [frontend.c:174:PPAC,ERROR] Failed to Open CAEN V1718
+00:25:29.935 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:25:30.228 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:25:49.166 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:25:49.167 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:25:50.306 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:26:05.574 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:26:07.579 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:26:08.032 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:26:08.728 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:26:16.236 2018/08/08 [mhttpd,INFO] Run #14 stopped
+00:26:22.794 2018/08/08 [mhttpd,INFO] Run #15 started
+00:26:42.487 2018/08/08 [mhttpd,INFO] Run #15 stopped
+00:26:50.334 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:26:50.335 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:26:50.335 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:26:50.335 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:26:50.335 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:26:50.436 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:26:50.569 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:26:57.732 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:26:59.737 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:27:00.213 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:27:00.901 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:27:26.160 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:27:26.160 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:27:26.262 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:27:26.335 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:27:30.920 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:27:32.924 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:27:33.392 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:27:34.092 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:27:48.111 2018/08/08 [mhttpd,INFO] Run #16 started
+00:29:46.784 2018/08/08 [mhttpd,INFO] Run #16 stopped
+00:30:02.108 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:30:04.852 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:30:04.852 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:30:04.852 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:30:04.853 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:30:05.918 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:30:12.049 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:30:14.052 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:30:14.228 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:30:14.228 2018/08/08 [frontend,ERROR] [frontend.c:174:PPAC,ERROR] Failed to Open CAEN V1718
+00:30:14.228 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:30:14.551 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:30:23.463 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:30:23.463 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:30:24.538 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:30:27.048 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:30:29.053 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:30:29.208 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:30:29.208 2018/08/08 [frontend,ERROR] [frontend.c:174:PPAC,ERROR] Failed to Open CAEN V1718
+00:30:29.208 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:30:29.513 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:30:38.870 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:30:38.870 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:30:39.950 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:30:45.861 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:30:47.867 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:30:48.021 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:30:48.021 2018/08/08 [frontend,ERROR] [frontend.c:174:PPAC,ERROR] Failed to Open CAEN V1718
+00:30:48.021 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:30:48.315 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:31:10.901 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:31:10.902 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:31:11.957 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:31:14.796 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:31:16.799 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:31:17.254 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:31:17.947 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:31:23.975 2018/08/08 [mhttpd,INFO] Run #17 started
+00:33:09.262 2018/08/08 [mhttpd,INFO] Run #17 stopped
+00:33:16.274 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:33:20.141 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:33:20.141 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:33:20.141 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:33:20.141 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:33:21.217 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:33:52.459 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:33:54.463 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:33:54.944 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:33:55.626 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:34:14.670 2018/08/08 [mhttpd,INFO] Run #18 started
+00:42:58.175 2018/08/08 [mhttpd,INFO] Run #18 stopped
+00:43:18.130 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:43:18.130 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:43:18.130 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:43:18.131 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:43:18.131 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:43:18.232 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:43:18.316 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:43:38.708 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:43:40.716 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:43:41.206 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:43:41.894 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:44:02.878 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:44:02.878 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:44:02.980 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:44:03.083 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:44:08.438 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:44:10.444 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:44:10.901 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:44:11.598 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:44:18.618 2018/08/08 [mhttpd,INFO] Run #19 started
+00:52:20.769 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+00:52:20.769 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:52:20.770 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:52:20.770 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+00:52:20.775 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+00:52:20.777 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+00:52:21.862 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+00:52:55.060 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+00:52:57.063 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+00:52:57.548 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+00:52:58.237 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+00:53:05.208 2018/08/08 [mhttpd,INFO] Run #19 stopped
+00:53:18.314 2018/08/08 [mhttpd,INFO] Run #20 started
+01:21:10.404 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:21:10.404 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:21:10.404 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:21:10.405 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:21:10.412 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:21:10.413 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:21:11.562 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:21:16.251 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:21:18.252 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:21:18.729 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:21:19.371 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:21:29.387 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:21:29.388 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:21:29.397 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:21:30.542 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:21:35.173 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:21:37.175 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:21:37.601 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:21:38.281 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:21:43.898 2018/08/08 [mhttpd,INFO] Run #20 stopped
+01:21:49.369 2018/08/08 [mhttpd,INFO] Run #21 started
+01:27:50.161 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:27:50.163 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:27:50.165 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:27:50.165 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:27:50.169 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:27:51.320 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:28:20.001 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:28:22.006 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:28:22.477 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:28:23.172 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:28:30.009 2018/08/08 [mhttpd,INFO] Run #21 stopped
+01:28:36.222 2018/08/08 [mhttpd,INFO] Run #22 started
+01:32:35.640 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:32:35.640 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:32:35.640 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:32:35.641 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:32:35.644 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:32:35.647 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:32:36.779 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:34:21.740 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:34:23.739 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:34:24.199 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:34:24.860 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:34:28.231 2018/08/08 [mhttpd,INFO] Run #22 stopped
+01:34:33.879 2018/08/08 [mhttpd,INFO] Run #23 started
+01:36:07.493 2018/08/08 [mhttpd,INFO] Run #23 stopped
+01:36:13.466 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:36:13.466 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:36:13.466 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:36:13.467 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:36:13.467 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:36:13.568 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:36:13.700 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:36:45.098 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:36:47.101 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:36:47.543 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:36:48.230 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:36:52.298 2018/08/08 [mhttpd,INFO] Run #24 started
+01:37:21.644 2018/08/08 [mhttpd,INFO] Run #24 stopped
+01:37:31.988 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:37:31.988 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:37:31.988 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:37:31.988 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:37:31.989 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:37:32.090 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:37:32.234 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:37:50.410 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:37:52.413 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:37:52.849 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:37:53.542 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:37:57.630 2018/08/08 [mhttpd,INFO] Run #25 started
+01:41:16.861 2018/08/08 [mhttpd,INFO] Run #25 stopped
+01:41:40.590 2018/08/08 [mhttpd,INFO] Run #26 started
+01:42:29.896 2018/08/08 [mhttpd,INFO] Run #26 stopped
+01:42:35.651 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:42:35.652 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:42:35.652 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:42:35.653 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:42:35.653 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:42:35.755 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:42:35.830 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:42:55.130 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:42:57.135 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:42:57.589 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:42:58.281 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:43:03.370 2018/08/08 [mhttpd,INFO] Run #27 started
+01:46:26.948 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:46:26.949 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:46:26.949 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:46:26.949 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:46:26.959 2018/08/08 [frontend,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:46:26.959 2018/08/08 [frontend,INFO] Program frontend on host localhost stopped
+01:46:28.045 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+01:51:01.319 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:51:03.327 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:51:03.784 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:51:04.478 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:51:05.318 2018/08/08 [mhttpd,INFO] Client 'frontend' on buffer 'SYSMSG' removed by cm_watchdog because process pid 9849 does not exist
+01:51:05.711 2018/08/08 [Analyzer,INFO] Client 'frontend' on buffer 'SYSTEM' removed by cm_watchdog because process pid 9849 does not exist
+01:51:07.318 2018/08/08 [mhttpd,INFO] Client 'Analyzer' on buffer 'SYSMSG' removed by cm_watchdog because process pid 9848 does not exist
+01:51:09.315 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:51:09.316 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:51:44.872 2018/08/08 [ODBEdit,ERROR] [odb.c:1434:db_open_database,ERROR] Removed ODB client 'frontend', index 2 because process pid 9849 does not exists
+01:51:44.872 2018/08/08 [ODBEdit,ERROR] [odb.c:1434:db_open_database,ERROR] Removed ODB client 'Analyzer', index 3 because process pid 9848 does not exists
+01:51:44.876 2018/08/08 [ODBEdit,INFO] Client 'Analyzer' on buffer 'SYSTEM' removed by bm_open_buffer because process pid 9848 does not exist
+01:51:44.883 2018/08/08 [mhttpd,INFO] Deleted entry '/System/Clients/9848' for client 'Analyzer' because it is not connected to ODB
+01:51:44.883 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost started
+01:51:46.885 2018/08/08 [Logger,INFO] Program Logger on host localhost started
+01:51:47.323 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost started
+01:51:48.002 2018/08/08 [frontend,INFO] Program frontend on host localhost started
+01:51:49.053 2018/08/08 [mhttpd,INFO] Run #27 stopped
+01:51:54.017 2018/08/08 [mhttpd,INFO] Run #28 started
+01:53:08.255 2018/08/08 [Analyzer,INFO] Client 'frontend' on buffer 'SYSTEM' removed by cm_watchdog because process pid 10002 does not exist
+01:53:08.255 2018/08/08 [Analyzer,INFO] Client 'frontend' on buffer 'SYSMSG' removed by cm_watchdog because process pid 10002 does not exist
+01:53:22.024 2018/08/08 [mhttpd,INFO] Deleted entry '/System/Clients/10002' for client 'frontend' because process pid 10002 does not exists
+01:53:22.024 2018/08/08 [mhttpd,ERROR] [midas.c:9657:rpc_client_check,ERROR] Connection to "frontend" on host localhost unexpectedly closed
+01:53:22.229 2018/08/08 [mhttpd,INFO] Run #28 stopped
+01:53:27.414 2018/08/08 [mhttpd,INFO] Program mhttpd on host localhost stopped
+01:53:27.415 2018/08/08 [Analyzer,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:53:27.415 2018/08/08 [Logger,ERROR] [midas.c:13900:rpc_server_receive,ERROR] rpc check ok, abort canceled
+01:53:27.415 2018/08/08 [Logger,INFO] Program Logger on host localhost stopped
+01:53:28.483 2018/08/08 [Analyzer,INFO] Program Analyzer on host localhost stopped
+13:45:30.600 2020/05/08 [ODBEdit,INFO] Program ODBEdit on host localhost stopped
+13:45:33.007 2020/05/08 [mhttpd1,INFO] Program mhttpd1 on host localhost started
+13:45:33.007 2020/05/08 [mhttpd1,ERROR] [mhttpd.cxx:18005:mongoose,ERROR] Cannot bind to port 8080
+13:45:33.007 2020/05/08 [mhttpd1,INFO] Program mhttpd1 on host localhost stopped
+13:46:20.300 2020/05/08 [mhttpd1,INFO] Program mhttpd1 on host localhost started
+13:46:20.300 2020/05/08 [mhttpd1,ERROR] [mhttpd.cxx:18005:mongoose,ERROR] Cannot bind to port 8080
+13:46:20.300 2020/05/08 [mhttpd1,INFO] Program mhttpd1 on host localhost stopped
+13:46:25.381 2020/05/08 [ODBEdit,INFO] Program ODBEdit on host localhost started
+15:25:23.820 2020/05/08 [ODBEdit,INFO] Program ODBEdit on host localhost stopped
+15:25:40.888 2020/05/08 [mhttpd,INFO] Run #23 paused
+15:25:45.126 2020/05/08 [mhttpd,INFO] Run #23 resumed
+15:27:35.305 2020/05/08 [mhttpd,INFO] Run #23 stopped
+15:27:47.127 2020/05/08 [frontend1,INFO] Client 'Analyzer' on buffer 'SYSMSG' removed by cm_periodic_tasks because process pid 5584 does not exist
+15:27:47.127 2020/05/08 [frontend1,INFO] Client 'Analyzer' on buffer 'SYSTEM' removed by cm_periodic_tasks because process pid 5584 does not exist
+15:27:47.127 2020/05/08 [frontend1,INFO] Client 'Analyzer' on database 'ODB' removed by db_cleanup called by cm_periodic_tasks because pid 5584 does not exist
+15:27:50.067 2020/05/08 [mhttpd,INFO] Client 'frontend1' on buffer 'SYSMSG' removed by cm_periodic_tasks because process pid 5575 does not exist
+15:27:50.067 2020/05/08 [mhttpd,INFO] Client 'frontend1' on database 'ODB' removed by db_cleanup called by cm_periodic_tasks because pid 5575 does not exist
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'mhttpd', index 0 because process pid 5426 does not exists
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'Logger', index 1 because process pid 5433 does not exists
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'Analyzer', index 2 because process pid 5584 does not exists
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'frontend1', index 3 because process pid 5575 does not exists
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Experiment/Security/RPC hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Experiment/Security/RPC hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Experiment/Security/mhttpd hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Experiment/Security/mhttpd hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Logger/Channels/0/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Logger/Channels/0/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Logger/Channels/0/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Logger/Channels/0/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Runinfo"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Runinfo"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Sequencer/State"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Sequencer/State"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Equipment/KOBRA_Beamline_Detectors/Common"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Equipment/KOBRA_Beamline_Detectors/Common"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Equipment/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Equipment/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Equipment/KOBRA_Beamline_Detectors/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Equipment/KOBRA_Beamline_Detectors/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/Parameters/F3PPAC"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/Parameters/F3PPAC"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/Output"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/Output"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/Bank switches"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/Bank switches"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/KOBRA_Beamline_Detectors/Common"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/KOBRA_Beamline_Detectors/Common"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Corrected 14 ODB entries
+14:37:21.176 2020/05/22 [Analyzer,INFO] Deleted entry '/System/Clients/5426' for client 'mhttpd' because it is not connected to ODB
+14:37:21.176 2020/05/22 [Analyzer,INFO] Deleted entry '/System/Clients/5575' for client 'frontend1' because it is not connected to ODB
+14:37:21.176 2020/05/22 [Analyzer,INFO] Program Analyzer on host localhost started
+14:37:21.176 2020/05/22 [Analyzer,INFO] Program Analyzer on host localhost stopped
+14:37:46.466 2020/05/22 [mhttpd,INFO] Deleted entry '/System/Clients/5584' for client 'Analyzer' because it is not connected to ODB
+14:37:46.466 2020/05/22 [mhttpd,INFO] Program mhttpd on host localhost started
+14:37:48.472 2020/05/22 [Logger,INFO] Program Logger on host localhost started
+14:37:48.473 2020/05/22 [Logger,ERROR] [history.cxx:97:xread,ERROR] Error: Unexpected end-of-file when reading file "/home/daqcontrol/online/midas_daq/data/200522.hst"
+14:37:48.474 2020/05/22 [Logger,ERROR] [history.cxx:97:xread,ERROR] Error: Unexpected end-of-file when reading file "/home/daqcontrol/online/midas_daq/data/200522.hst"
+14:37:48.474 2020/05/22 [Logger,ERROR] [history.cxx:97:xread,ERROR] Error: Unexpected end-of-file when reading file "/home/daqcontrol/online/midas_daq/data/200522.hst"
+11:10:41.697 2020/06/29 [mhttpd,INFO] Run #7 stopped
+11:11:21.902 2020/06/29 [mhttpd,INFO] Program mhttpd on host localhost stopped
+11:11:22.025 2020/06/29 [Analyzer,INFO] Program Analyzer on host localhost stopped
+11:11:26.848 2020/06/29 [ODBEdit,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'frontend', index 1 because process pid 4766 does not exists
+11:11:26.860 2020/06/29 [ODBEdit,INFO] Client 'frontend' on buffer 'SYSTEM' removed by bm_open_buffer because process pid 4766 does not exist
+11:11:26.867 2020/06/29 [mhttpd,INFO] Program mhttpd on host localhost started
