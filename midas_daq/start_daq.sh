@@ -10,11 +10,12 @@ sleep 2
 
 ./frontend &
 # gnome-terminal -e ./frontend & 
-gnome-terminal -e ./analyzer &
+gnome-terminal --disable-factory -e  ./analyzer &
 #./frontend &
-mlogger -D
 
-~/packages/roody/bin/roody -Hlocalhost
+#mlogger -D
+
+#~/packages/roody/bin/roody -Hlocalhost
 
 echo Please point your web browser to http://kobradaq.test:8081
 echo run: firefox http://kobradaq.test:8081 &

@@ -283,3 +283,52 @@
 15:27:47.127 2020/05/08 [frontend1,INFO] Client 'Analyzer' on database 'ODB' removed by db_cleanup called by cm_periodic_tasks because pid 5584 does not exist
 15:27:50.067 2020/05/08 [mhttpd,INFO] Client 'frontend1' on buffer 'SYSMSG' removed by cm_periodic_tasks because process pid 5575 does not exist
 15:27:50.067 2020/05/08 [mhttpd,INFO] Client 'frontend1' on database 'ODB' removed by db_cleanup called by cm_periodic_tasks because pid 5575 does not exist
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'mhttpd', index 0 because process pid 5426 does not exists
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'Logger', index 1 because process pid 5433 does not exists
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'Analyzer', index 2 because process pid 5584 does not exists
+14:37:21.175 2020/05/22 [Analyzer,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'frontend1', index 3 because process pid 5575 does not exists
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Experiment/Security/RPC hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Experiment/Security/RPC hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Experiment/Security/mhttpd hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Experiment/Security/mhttpd hosts/Allowed hosts"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Logger/Channels/0/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Logger/Channels/0/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Logger/Channels/0/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Logger/Channels/0/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Runinfo"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Runinfo"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Sequencer/State"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Sequencer/State"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Equipment/KOBRA_Beamline_Detectors/Common"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Equipment/KOBRA_Beamline_Detectors/Common"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Equipment/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Equipment/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Equipment/KOBRA_Beamline_Detectors/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Equipment/KOBRA_Beamline_Detectors/Settings"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/Parameters/F3PPAC"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/Parameters/F3PPAC"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/Output"
+14:37:21.175 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/Output"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/Bank switches"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/Bank switches"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/KOBRA_Beamline_Detectors/Common"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/KOBRA_Beamline_Detectors/Common"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed open record flag from "/Analyzer/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Removed exclusive access mode from "/Analyzer/KOBRA_Beamline_Detectors/Statistics"
+14:37:21.176 2020/05/22 [Analyzer,INFO] Corrected 14 ODB entries
+14:37:21.176 2020/05/22 [Analyzer,INFO] Deleted entry '/System/Clients/5426' for client 'mhttpd' because it is not connected to ODB
+14:37:21.176 2020/05/22 [Analyzer,INFO] Deleted entry '/System/Clients/5575' for client 'frontend1' because it is not connected to ODB
+14:37:21.176 2020/05/22 [Analyzer,INFO] Program Analyzer on host localhost started
+14:37:21.176 2020/05/22 [Analyzer,INFO] Program Analyzer on host localhost stopped
+14:37:46.466 2020/05/22 [mhttpd,INFO] Deleted entry '/System/Clients/5584' for client 'Analyzer' because it is not connected to ODB
+14:37:46.466 2020/05/22 [mhttpd,INFO] Program mhttpd on host localhost started
+14:37:48.472 2020/05/22 [Logger,INFO] Program Logger on host localhost started
+14:37:48.473 2020/05/22 [Logger,ERROR] [history.cxx:97:xread,ERROR] Error: Unexpected end-of-file when reading file "/home/daqcontrol/online/midas_daq/data/200522.hst"
+14:37:48.474 2020/05/22 [Logger,ERROR] [history.cxx:97:xread,ERROR] Error: Unexpected end-of-file when reading file "/home/daqcontrol/online/midas_daq/data/200522.hst"
+14:37:48.474 2020/05/22 [Logger,ERROR] [history.cxx:97:xread,ERROR] Error: Unexpected end-of-file when reading file "/home/daqcontrol/online/midas_daq/data/200522.hst"
+11:10:41.697 2020/06/29 [mhttpd,INFO] Run #7 stopped
+11:11:21.902 2020/06/29 [mhttpd,INFO] Program mhttpd on host localhost stopped
+11:11:22.025 2020/06/29 [Analyzer,INFO] Program Analyzer on host localhost stopped
+11:11:26.848 2020/06/29 [ODBEdit,ERROR] [odb.cxx:2031:db_open_database,ERROR] Removed ODB client 'frontend', index 1 because process pid 4766 does not exists
+11:11:26.860 2020/06/29 [ODBEdit,INFO] Client 'frontend' on buffer 'SYSTEM' removed by bm_open_buffer because process pid 4766 does not exist
+11:11:26.867 2020/06/29 [mhttpd,INFO] Program mhttpd on host localhost started

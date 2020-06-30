@@ -40,7 +40,7 @@ INT f3_silicon_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
 
 	printf("\n========================== Initializing F3 SILICON ADC...\n");
 	printf("V785N initialization...");
-	if(!cvt_V792_open(&F3_SILICON_type, F3_SILICON_ADDR, BHandle, CVT_V785_TYPE_A))
+	if(!cvt_V792_open(&F3_SILICON_type, F3_SILICON_ADDR, BHandle, CVT_V785_TYPE_N))
 	{
 		printf("\n Error executing cvt_F3_SILICON_type_open \n");
 		return FE_ERR_HW;

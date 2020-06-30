@@ -219,6 +219,8 @@ libtigfunc.o
 /*-- Frontend Init -------------------------------------------------*/
 
 static int32_t BHandle;
+static int32_t BHandle2;
+
 
 const unsigned int DATA_BUFF_SIZE=4*1024*1024;
 
@@ -250,15 +252,15 @@ INT frontend_init() {
 
   //VME initialization
 
-  	//hardware initialization
-  	printf("\nV2718 initialization...");
-  	CVBoardTypes VMEBoard = cvV2718;
-  	short Link=0;
+        short Link=0;
   	short Device=0;
+        CVBoardTypes VMEBoard = cvV2718;
+        
+        printf("\n1st V2718 initialization...");
 
   	//Make sure V2718 opened OK!
   	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718");
+  		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718_board1");
   		return FE_ERR_HW;
   	}
   	printf("Done\n");
@@ -266,109 +268,40 @@ INT frontend_init() {
 	unsigned int Rotaryswitch;
 
 	CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x36), &Rotaryswitch);
-	printf("Controller rotary switch:%i\n", Rotaryswitch);
-	
- 	CVPulserSelect PulSel = static_cast<CVPulserSelect>(0);//See CAENVMEtypes.h, CAENVMElib.h at /usr/include. 0 means Pulser A setting 
-	unsigned char Period = 63;
-	unsigned char Width = 1; 
-	CVTimeUnits Unit = static_cast<CVTimeUnits>(1); //0: 25ns unit, 1: 1.6us
-	unsigned char PulseNo=0; //0: infinite
-	CVIOSources Start = cvInputSrc0;
-	CVIOSources Reset = static_cast<CVIOSources>(0);
-	
-	if(CAENVME_SetPulserConf(BHandle, PulSel, Period, Width, Unit, PulseNo, Start, Reset)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Set Pulser Conf");
-  		return FE_ERR_HW;
-  	}
-  	printf("Pulser set Done\n");
-
-//        CVIOSources Reset = 0;
- 	short limit = 5;// 0 - 1024; n means every n hits, 0 means every 1024 hit 
-	short AutoReset = 1; //0: disable 1: enable
-	CVIOSources Hit = cvInputSrc0;
-	CVIOSources Gate = cvInputSrc1;
-	Reset= static_cast<CVIOSources> (0);
-	if(CAENVME_SetScalerConf(BHandle, limit, AutoReset, Hit, Gate, Reset)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Set Scaler Conf");
-  		return FE_ERR_HW;
-  	}
-  	printf("Scaler set Done\n");
-
-	CVPulserSelect PulSel_out;//0:Pulser A
-	unsigned char Period_out;
-	unsigned char Width_out; 
-	CVTimeUnits  Unit_out; //0: 25ns unit, 1: 1.6us
-	unsigned char PulseNo_out; //0: infinite
-	CVIOSources Start_out;
-	CVIOSources Reset_out;	
-	if(CAENVME_GetPulserConf(BHandle, PulSel_out, &Period_out, &Width_out, &Unit_out, &PulseNo_out, &Start_out, &Reset_out)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Set Pulser Conf");
-  		return FE_ERR_HW;
-  	}
-  	printf("Pulser Get Period:%x\n", Period_out);
-
-/*        if(CAENVME_StartPulser(BHandle, PulSel)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Start Pulser");
-  		return FE_ERR_HW;
-  	}
-	  	printf("Pulser start Done\n");
-
-        if(CAENVME_DisableScalerGate(BHandle)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Enable Scalergate");
-  		return FE_ERR_HW;
-  	}
-	  	printf("Scaler gate disabled\n");
-*/
-        //== set output0 ==//
-	CVOutputSelect OutSel = cvOutput0; //see manual p.55
-	CVIOPolarity OutPol = cvDirect; // 0: Direct , 1: Inverted p.22
-	CVLEDPolarity LEDPol = cvActiveHigh;
-	CVIOSources Sources = cvMiscSignals;  	//see p.55 6(cvMiscSignals) means pulser A for output0, scaler end for output4 
-        if(CAENVME_SetOutputConf(BHandle, OutSel, OutPol, LEDPol, Sources)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Set Output Conf");
-  		return FE_ERR_HW;
-  	}
-	printf("Controller Output0 set Done\n");
-
-        //== set ouput4==//
-	OutSel = cvOutput4;
- 	Sources = cvMiscSignals;
-	if(CAENVME_SetOutputConf(BHandle, OutSel, OutPol, LEDPol, Sources)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Set Output Conf");
-  		return FE_ERR_HW;
-  	}
-	printf("Controller Output4 set Done\n");
-
-	CVRegisters Reg = cvScaler1;
-	unsigned int Data;
-	CAENVME_ReadRegister(BHandle, Reg, &Data);
-	printf("SScaler Get Period:%d\n", Data);
-
-
-
+	printf("1st Controller rotary switch:%i\n", Rotaryswitch);
 
 #ifdef USE_PPAC_F1
   	f1_ppac_init(BHandle);
 #endif
 
-#ifdef USE_PLASTIC_F1
-  	f1_plastic_init(BHandle);
-#endif
 
-#ifdef USE_PPAC_F2
-  	f2_ppac_init(BHandle);
-#endif
+  	//hardware initialization
+  	printf("\n2nd V2718 initialization...");
+
+  	Link=0;
+  	Device=1;
+//	unsigned int Rotaryswitch;
+  	//Make sure V2718 opened OK!
+  	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle2)!=cvSuccess){
+  		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718_board2");
+  		return FE_ERR_HW;
+  	}
+  	printf("Done\n");
+
+	CAENVME_ReadRegister(BHandle2, static_cast<CVRegisters>(0x36), &Rotaryswitch);
+	printf("2nd Controller rotary switch:%i\n", Rotaryswitch);
+
 
 #ifdef USE_SILICON_F3
-  	f3_silicon_init(BHandle, &tr_set);
+  	f3_silicon_init(BHandle2, &tr_set);
 #endif
 
 #ifdef USE_PLASTIC_F3
-  	f3_plastic_init(BHandle);
+  	f3_plastic_init(BHandle2);
 #endif
 
 #ifdef USE_PPAC_F3
-  	f3_ppac_init(BHandle);
+  	f3_ppac_init(BHandle2);
 #endif
 
 
@@ -402,12 +335,12 @@ INT frontend_exit() {
 #endif
 
 #ifdef USE_SILICON_F3
-	f3_silicon_exit(BHandle);
+	f3_silicon_exit(BHandle2);
 	free(f3_silicon_buff);
 #endif
 
 #ifdef USE_PLASTIC_F3
-	f3_plastic_exit(BHandle);
+	f3_plastic_exit(BHandle2);
 	free(f3_plastic_buff);
 #endif
 
@@ -424,13 +357,13 @@ INT frontend_exit() {
 INT begin_of_run(INT run_number, char *error) {
 
 
-scaler_high=0; 
-scaler_low=0; 
+//scaler_high=0; 
+//scaler_low=0; 
 
-BOP=1;
+//BOP=1;
 
 #ifdef USE_PPAC_F1
-	f1_ppac_buff=malloc(DATA_BUFF_SIZE);
+	f1_ppac_buff= static_cast<uint32_t*>( malloc(DATA_BUFF_SIZE));
 	f1_ppac_begin(run_number, error, &tr_set);
 #endif
 
@@ -446,7 +379,7 @@ BOP=1;
 
 #ifdef USE_SILICON_F3
 	f3_silicon_buff= static_cast<uint32_t*>(malloc(DATA_BUFF_SIZE));
-	f3_silicon_begin(BHandle, run_number, error, &tr_set);
+	f3_silicon_begin(BHandle2, run_number, error, &tr_set);
 #endif
 
 #ifdef USE_PLASTIC_F3
@@ -482,7 +415,7 @@ INT end_of_run(INT run_number, char *error) {
 #endif
 
 #ifdef USE_SILICON_F3
-	f3_silicon_end(BHandle, run_number, error);
+	f3_silicon_end(BHandle2, run_number, error);
 	free(f3_silicon_buff);
 #endif
 
@@ -509,7 +442,7 @@ INT pause_run(INT run_number, char *error) {
   return SUCCESS;
 }
 
-/*-- Resuem Run ----------------------------------------------------*/
+/*-- Resume Run ----------------------------------------------------*/
 
 INT resume_run(INT run_number, char *error) {
 
@@ -525,21 +458,21 @@ INT frontend_loop() {
 }
 
 /*-- Trigger event routines ----------------------------------------*/
-unsigned short tmp_Data = 0;
+//unsigned short tmp_Data = 0;
 INT poll_event(INT source, INT count, BOOL test) {
- /*      unsigned int Reg;
-	unsigned short Data;
+        /*CVRegisters Reg;
+	unsigned int Data;
 	CAENVME_ReadRegister(BHandle, Reg, &Data);
-	printf("Scaler Accumulated:%d\n", Data);
+	//printf("Scaler Accumulated:%d\n", Data);
 	if(Data==0 && tmp_Data==0)
 	{
 	s_evt++;
 	tmp_Data = 1;
 	}
-	//printf("Accumulated:%d\n", s_evt);
+	//printf("Accumulated:%d\n", s_evt);*/
 	uint lam=0;
 #ifndef USE_PLASTIC_F3
-
+/*
 	#ifdef USE_PLASTIC_F1
 	lam=f1_plastic_check_fifo(BHandle);
 	#endif
@@ -561,21 +494,30 @@ INT poll_event(INT source, INT count, BOOL test) {
 	#endif
 
 	#ifdef USE_SILICON_F3
-	lam=f3_silicon_check_fifo(BHandle);
+	lam=f3_silicon_check_fifo(BHandle2);
 	#endif
-
+*/
+        #ifdef USE_PPAC_F3
+	lam=f3_ppac_check_fifo(BHandle2);
+	#endif
+/*        
+        #ifdef USE_PPAC_F1
+	lam=f1_ppac_check_fifo(BHandle);
+	#endif
+*/
 #endif
 
 #ifdef USE_PLASTIC_F3
-	lam=f3_plastic_check_fifo(BHandle);
+	lam=f3_plastic_check_fifo(BHandle2);
 #endif
-*/
+
+/*
 CVRegisters Reg2;
 unsigned int Data;	
 CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x1D), &Data );
-printf("Scaler:%d\n", Data); 
+//printf("Scaler:%d\n", Data); 
 s_evt++;
-printf("Accumulated:%d\n", s_evt);
+//printf("Accumulated:%d\n", s_evt);
 
 BOOL lam=FALSE;
 unsigned int ac_scaler;
@@ -588,6 +530,7 @@ if(ac_scaler!=BOP){lam=SUCCESS; scaler_low=ac_scaler;}
 BOP=ac_scaler;
 //if(lam){printf("lam=%d, scaler=%d, fifo=%d\n", lam, ac_scaler, f3_silicon_check_fifo(BHandle));}
 if(lam){printf("=========================== lam=%d, scaler_high=%d, scaler_low=%d\n", lam, scaler_high, scaler_low);}
+*/
 	return lam;
 }
 
@@ -625,24 +568,24 @@ INT read_trigger_event(char *pevent, INT off) {
 	f1_plastic_read_event(BHandle, BANK_NAME_F1PLASTIC, pevent, off, f1_plastic_buff, DATA_BUFF_SIZE, f1plastic_data);
 #endif
 
-	#ifdef USE_PPAC_F2
+#ifdef USE_PPAC_F2
 	uint32_t *f2ppac_data;
 	f2_ppac_read_event(BHandle, BANK_NAME_F2PPAC, pevent, off, f2_ppac_buff, DATA_BUFF_SIZE, f2ppac_data);
 #endif
 
 #ifdef USE_SILICON_F3
 	uint32_t *f3silicon_data;
-	f3_silicon_read_event(BHandle, BANK_NAME_F3SILICON, pevent, off, f3_silicon_buff, DATA_BUFF_SIZE, f3silicon_data);	
+	f3_silicon_read_event(BHandle2, BANK_NAME_F3SILICON, pevent, off, f3_silicon_buff, DATA_BUFF_SIZE, f3silicon_data);	
 #endif
 
 #ifdef USE_PLASTIC_F3
 	uint32_t *f3plastic_data;
-	f3_plastic_read_event(BHandle, BANK_NAME_F3PLASTIC, pevent, off, f3_plastic_buff, DATA_BUFF_SIZE, f3plastic_data);
+	f3_plastic_read_event(BHandle2, BANK_NAME_F3PLASTIC, pevent, off, f3_plastic_buff, DATA_BUFF_SIZE, f3plastic_data);
 #endif
 
 #ifdef USE_PPAC_F3
 	uint32_t *f3ppac_data;
-	f3_ppac_read_event(BHandle, BANK_NAME_F3PPAC, pevent, off, f3_ppac_buff, DATA_BUFF_SIZE, f3ppac_data);
+	f3_ppac_read_event(BHandle2, BANK_NAME_F3PPAC, pevent, off, f3_ppac_buff, DATA_BUFF_SIZE, f3ppac_data);
 #endif
 
 	return bk_size(pevent);

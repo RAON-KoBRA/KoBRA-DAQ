@@ -16,7 +16,7 @@
 //set F3 module address
 #define F3_PPAC_ADDR 0x000D
 #define F3_PLASTIC_ADDR 0x0005
-#define F3_SILICON_ADDR 0x000F
+#define F3_SILICON_ADDR 0x000E
 
 //set VME controller address
 #define Controller_ADDR 0x0000 //PROG_3 switch setting ON SW9,SW8,x,x, PROG 3 OFF x, x, SW9, SW8

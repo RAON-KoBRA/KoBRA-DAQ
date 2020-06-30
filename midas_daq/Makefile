@@ -105,8 +105,8 @@ ROOTANA_INC = -I/home/daqcontrol/packages/rootana/libMidasInterface
 #EQU_FLAG = -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3
 #EQU_FLAG = -DUSE_SILICON_F3 #F3 silicon_trigger 
 #EQU_FLAG= -DUSE_PLASTIC_F3
+EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F3 -DUSE_SILICON_F3
 #EQU_FLAG= -DUSE_PPAC_F3 -DUSE_SILICON_F3
-EQU_FLAG= -DUSE_PPAC_F3 
 ##############################################################
 
 

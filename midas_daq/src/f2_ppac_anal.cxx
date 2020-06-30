@@ -128,7 +128,7 @@ INT F2_TDC_BOR(INT run_number)
 INT F2_TDC_EOR(INT run_number)
 {
         char pedestalname[256];
-	sprintf(pedestalname,  "/home/midas/online/data/pedestal-%d.txt", run_number);
+	sprintf(pedestalname,  "~/online/data/pedestal-%d.txt", run_number);
 
 /*	ofstream myfile;
 	myfile.open (pedestalname);

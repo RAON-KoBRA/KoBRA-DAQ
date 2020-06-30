@@ -139,7 +139,7 @@ INT F3_sili_ADC_INIT(void)
 	char inputpedestalname[256];
 	int line_ch;
 	float line_ped;
-	sprintf(inputpedestalname,  "/home/midas/online/data/pedestal-449.txt");
+	sprintf(inputpedestalname,  "~/online/data/pedestal-449.txt");
 	ifstream myfile(inputpedestalname);
 	if (myfile.is_open())
 	{

@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 	void *pdata3=0;
 
 	if(argc<2){printf("type run number!\n"); exit(-1);}
-	sprintf(path_file, "/home/midas/online/data/run%s.mid", argv[argc-1]);
+	sprintf(path_file, "/home/daqcontrol/online/data/run%s.mid", argv[argc-1]);
 
 	TMidasFile fp;
 
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 	char inputpedestalname[256];
 	int line_ch;
 	float line_ped;
-	sprintf(inputpedestalname,  "/home/midas/online/data/pedestal-449.txt");
+	sprintf(inputpedestalname,  "/home/daqcontrol/online/data/pedestal-449.txt");
 	ifstream myfile(inputpedestalname);
 	if (myfile.is_open())
 	{
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 	char inputgainname[256];
 	float line_interc;
 	float line_slope;
-	sprintf(inputgainname,  "/home/midas/online/data/gain-472.txt");
+	sprintf(inputgainname,  "/home/daqcontrol/online/data/gain-472.txt");
 
 	ifstream myfileg(inputgainname);
 	if (myfileg.is_open())

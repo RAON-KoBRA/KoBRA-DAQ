@@ -43,7 +43,7 @@ INT set_odb(HNDLE *hDB, const char *eq_name,
   }
 
   //setting logger dir
-  char *dir="/home/midas/online/data";
+  char *dir="/home/daqcontrol/online/data";
   db_set_value(*hDB, 0, "/Logger/Data dir", dir, sizeof(char[256]), 1, TID_STRING);
   printf("Done\n");
 

@@ -214,7 +214,7 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
 					*pdata++=channel;
 					*pdata++=measure;
-					//printf("f1_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
+					printf("f1_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 
 			case CVT_V1190_GLOBAL_TRIGGER_TIME:
