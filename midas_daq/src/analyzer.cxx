@@ -141,7 +141,7 @@ BANK_LIST ana_trigger_bank_list[] = {
 /*-- Event request list --------------------------------------------*/
 
 ANALYZE_REQUEST analyze_request[] = {
-  {"KOBRA_Beamline_Detectors",               /* equipment name */
+  {"Trigger1 (Beamline)",               /* equipment name */
    {1,                         /* event ID */
     TRIGGER_ALL,               /* trigger mask */
     GET_NONBLOCKING,           /* get events without blocking producer */

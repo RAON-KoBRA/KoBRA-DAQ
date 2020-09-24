@@ -87,17 +87,17 @@ INT f3_plastic_exit()
 
 }
 
-INT f3_plastic_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
+INT f3_plastic_begin(INT run_number, char *error, TRIGGER_SETTINGS_BEAMLINE *ts)
 {
 
-	INT16 window_width=ts->f3_pla_window_width/25;
+	INT16 window_width=ts->f3_ppac_window_width/25; //f3_pla_window
 
 	INT16 window_offset=0;
-	if (ts->f3_pla_window_width>0 || ts->f3_pla_window_width==0){window_offset=ts->f3_pla_window_width/25;}
-	if (ts->f3_pla_window_offset<0){window_offset=4096-(ts->f3_pla_window_offset/25)*-1;}
+	if (ts->f3_ppac_window_width>0 || ts->f3_ppac_window_width==0){window_offset=ts->f3_ppac_window_width/25;}
+	if (ts->f3_ppac_window_offset<0){window_offset=4096-(ts->f3_ppac_window_offset/25)*-1;}
 
-	INT16 extra_search_margin=ts->f3_pla_extra_search_margin/25;
-	INT16 reject_margin=ts->f3_pla_reject_margin/25;
+	INT16 extra_search_margin=ts->f3_ppac_extra_search_margin/25;
+	INT16 reject_margin=ts->f3_ppac_reject_margin/25;
 	INT blt_event_num=1;
 	const UINT16 *p_enable_msk=NULL;
 

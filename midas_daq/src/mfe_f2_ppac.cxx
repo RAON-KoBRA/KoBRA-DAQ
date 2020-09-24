@@ -24,7 +24,7 @@ UINT64 f2_pp_time_tag;
 
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
-
+extern uint64_t GCOUNT;
 
 
 INT f2_ppac_init(int32_t BHandle)
@@ -36,7 +36,7 @@ INT f2_ppac_init(int32_t BHandle)
 
 	memset( &F2_PPAC_type, 0, sizeof(F2_PPAC_type));
 	//data_buff=new uint32_t(DATA_BUFF_SIZE);
-	if(!cvt_V1190_open(&F2_PPAC_type, F2_PPAC_ADDR, BHandle, CVT_V1290_TYPE_A))
+	if(!cvt_V1190_open(&F2_PPAC_type, F2_PPAC_ADDR, BHandle, CVT_V1290_TYPE_N))
 	{
 		printf("\n Error executing cvt_F2_PPAC_type_open \n");
 		return FE_ERR_HW;
@@ -87,7 +87,7 @@ INT f2_ppac_exit()
 
 }
 
-INT f2_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
+INT f2_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS_BEAMLINE *ts)
 {
 
 	INT16 window_width=ts->f2_ppac_window_width/25;
@@ -199,8 +199,8 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 
-					*pdata++=event_count;
-					//printf("f2_Global_header; event_count:%d\n", event_count);
+					*pdata++=GCOUNT;//event_count;
+					printf("F2TDC_Global_header; event_count:%d %lu\n", event_count, GCOUNT);
 				} break;
 
 			case CVT_V1190_TDC_MEASURE:
@@ -221,6 +221,8 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 
 					*pdata++=time_stamp2;
 					*pdata++=time_stamp1;
+					*pdata++=GCOUNT;
+					//*pdata++=event_count;
 					//printf("f2_Global_time_tag:%d, u_time:%11f\n", time_stamp1, (time_stamp2|time_stamp1)*800e-9);
 				} break;
 

@@ -78,7 +78,7 @@ missroot:
 endif
 #-------------------------------------------------------------------
 # The following lines define directories. Adjust if necessary
-#                 
+#
 INC_DIR   = $(MIDASSYS)/include
 #LIB_DIR   = $(MIDASSYS)/$(OS_DIR)/lib
 #else
@@ -91,7 +91,7 @@ LIB	  = $(LIB_DIR)/libmidas.a
 SRC_DIR   = $(MIDASSYS)/src
 USR_INC   = $(HOME)/online/midas_daq/include
 USR_SRC   = $(HOME)/online/midas_daq/src
-ROOTANA_INC = -I/home/daqcontrol/packages/rootana/libMidasInterface
+ROOTANA_INC = -I/home/kobradaq/packages/rootana/libMidasInterface
 
 
 ###############################################################
@@ -105,7 +105,8 @@ ROOTANA_INC = -I/home/daqcontrol/packages/rootana/libMidasInterface
 #EQU_FLAG = -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3
 #EQU_FLAG = -DUSE_SILICON_F3 #F3 silicon_trigger 
 #EQU_FLAG= -DUSE_PLASTIC_F3
-EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F3 -DUSE_SILICON_F3
+EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_V2495 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB
+#EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_V2495
 #EQU_FLAG= -DUSE_PPAC_F3 -DUSE_SILICON_F3
 ##############################################################
 
@@ -114,7 +115,7 @@ EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F3 -DUSE_SILICON_F3
 # List of analyzer modules
 #
 MODULES = f1_ppac_anal.o f1_plastic_anal.o f2_ppac_anal.o f3_silicon_anal.o f3_plastic_anal.o f3_ppac_anal.o
-MFE_MODULES = mfe_common.o mfe_f1_plastic.o mfe_f1_ppac.o mfe_f2_ppac.o mfe_f3_silicon.o mfe_f3_plastic.o mfe_f3_ppac.o 
+MFE_MODULES = mfe_common.o mfe_f1_plastic.o mfe_f1_ppac.o mfe_f2_ppac.o mfe_f3_silicon.o mfe_f3_plastic.o mfe_f3_ppac.o mfe_v2495.o mfe_silicon_arya.o mfe_silicon_aryb.o
 
 #-------------------------------------------------------------------
 # Frontend code name defaulted to frontend in this example.
@@ -137,10 +138,10 @@ MIDAS2ROOT = midas2root
 CC = gcc
 CXX = g++ -std=c++11
 #CFLAGS += -O2 -g -Wall -Wformat=2 -Wno-format-nonliteral -Wno-strict-aliasing -Wuninitialized -Wno-unused-function
-CFLAGS += -I$(INC_DIR) -I$(USR_INC) -I/usr/include -I /home/daqcontrol/packages/rootana/include -I/home/daqcontrol/packages/midas/include
-LDFLAGS += -L$(ROOTANASYS)/lib/librootana.a -L/home/daqcontrol/packages/rootana/lib -lrootana
+CFLAGS += -I$(INC_DIR) -I$(USR_INC) -I/usr/include -I /home/kobradaq/packages/rootana/include -I/home/kobradaq/packages/midas/include
+LDFLAGS += -L$(ROOTANASYS)/lib/librootana.a -L/home/kobradaq/packages/rootana/lib -lrootana
 COPTS	=	-fPIC -DLINUX -Wall 
-DEPLIBS = -lCAENVME -lcurses -lCAENV1x90SDK -lCAENqtpSDK
+DEPLIBS = -lCAENVME -lcurses -lCAENV1x90SDK -lCAENqtpSDK -lCAEN_PLU
 
 
 #TEST:=
@@ -154,26 +155,33 @@ all: $(UFE) $(UANA) $(MIDAS2ROOT)
 
 mfe_common.o: $(USR_SRC)/mfe_common.cxx
 		$(CXX) $(COPTS) $(CFLAGS) $(OSFLAGS) -o $@ -c $<
-		
+
 mfe_f1_plastic.o: $(USR_SRC)/mfe_f1_plastic.cxx
-		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PLASTIC_F1 $(OSFLAGS) -o $@ -c $<		
-		
+		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PLASTIC_F1 $(OSFLAGS) -o $@ -c $<
+
 mfe_f1_ppac.o: $(USR_SRC)/mfe_f1_ppac.cxx
-		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PPAC_F1 $(OSFLAGS) -o $@ -c $<		
+		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PPAC_F1 $(OSFLAGS) -o $@ -c $<
 
 mfe_f2_ppac.o: $(USR_SRC)/mfe_f2_ppac.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PPAC_F2 $(OSFLAGS) -o $@ -c $<
- 
+
 mfe_f3_silicon.o: $(USR_SRC)/mfe_f3_silicon.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_SILICON_F3 $(OSFLAGS) -o $@ -c $<
-		
+
 mfe_f3_plastic.o: $(USR_SRC)/mfe_f3_plastic.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PLASTIC_F3 $(OSFLAGS) -o $@ -c $<
 
 mfe_f3_ppac.o: $(USR_SRC)/mfe_f3_ppac.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PPAC_F3 $(OSFLAGS) -o $@ -c $<
 
+mfe_v2495.o: $(USR_SRC)/mfe_v2495.cxx
+		$(CXX) $(COPTS) $(CFLAGS) -DUSE_V2495 $(OSFLAGS) -o $@ -c $<
 
+mfe_silicon_arya.o: $(USR_SRC)/mfe_silicon_arya.cxx
+		$(CXX) $(COPTS) $(CFLAGS) -DUSE_SILICON_ARYA $(OSFLAGS) -o $@ -c $<
+
+mfe_silicon_aryb.o: $(USR_SRC)/mfe_silicon_aryb.cxx
+		$(CXX) $(COPTS) $(CFLAGS) -DUSE_SILICON_ARYB $(OSFLAGS) -o $@ -c $<
 
 #newfrontend
 #frontend: $(LIB_DIR)/mfe.o frontend.o $(LIB)
@@ -234,9 +242,9 @@ $(MIDAS2ROOT).o: $(USR_SRC)/$(MIDAS2ROOT).cxx
 $(MIDAS2ROOT): $(LIB) $(MIDAS2ROOT).o 
 	$(CXX) $(CFLAGS) $(EQU_FLAG) -o $@ $(MIDAS2ROOT).o \
 	$(LIB) $(LDFLAGS) $(ROOTLIBS) $(LIBS)
-	
+
 	mv *.o ./obj/
-			
+
 clean::
 	-rm -f $(UANA) $(UFE) $(MIDAS2ROOT) ./obj/*.o *~ \#* 
 	-rm -f *.o *~ \#*

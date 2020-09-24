@@ -14,30 +14,32 @@
 #include "cvt_V1190.c"
 #include <mfe_TDC.h>
 
-
 #include "midas.h"
 #include "odb_trigger.h"
 #include "detector_conf.h"
+#include "CAEN_PLU.h"
 
 static cvt_V1190_data F3_PPAC_type;
 
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
+extern uint64_t GCOUNT;
 
 UINT32 f3_pp_f_time;
 UINT64 f3_pp_time_tag;
 
+uint32_t jjf3 = 0;
 
-INT f3_ppac_init(int32_t BHandle)
-{
+INT f3_ppac_init(int32_t BHandle){
 
 	int32_t addr;
+
 	//Make sure V1270N opened OK!
 	printf("\n===================== Initializing F3 PPAC TDC...");
 
 	memset( &F3_PPAC_type, 0, sizeof(F3_PPAC_type));
 
-	if(!cvt_V1190_open(&F3_PPAC_type, F3_PPAC_ADDR, BHandle, CVT_V1290_TYPE_N))
+	if(!cvt_V1190_open(&F3_PPAC_type, F3_PPAC_ADDR, BHandle, CVT_V1290_TYPE_A))
 	{
 		printf("\n Error executing cvt_F3_PPAC_type_open \n");
 		return FE_ERR_HW;
@@ -61,7 +63,6 @@ INT f3_ppac_init(int32_t BHandle)
 		if(!cvt_V1190_data_clear(&F3_PPAC_type)){printf("\nError executing software clean\n");}
 	printf("Done\n");
 
-
 	INT16 default_val=0x0239; //see V1290 manual page 82
 	INT16 data;
 
@@ -73,28 +74,23 @@ INT f3_ppac_init(int32_t BHandle)
 	CAENVME_ReadCycle(BHandle, addr, &data, CVT_V1190_CONTROL_AM, CVT_V1190_CONTROL_DATA_SIZE);
 	printf("0X%04x\n\n", data);
 
-
-
 	sleep(1);
 
-
-
 	return SUCCESS;
 }
 
-INT f3_ppac_exit()
-{
+INT f3_ppac_exit(){
+
 	cvt_V1190_module_reset(&F3_PPAC_type);
 	cvt_V1190_close(&F3_PPAC_type);
+
 	return SUCCESS;
 
 }
 
-INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
-{
+INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS_BEAMLINE *ts){
 
 	INT16 window_width=ts->f3_ppac_window_width/25;
-
 	INT16 window_offset=0;
 	if (ts->f3_ppac_window_offset>0 || ts->f3_ppac_window_offset==0){window_offset=ts->f3_ppac_window_offset/25;}
 	if (ts->f3_ppac_window_offset<0){window_offset=4096-(ts->f3_ppac_window_offset/25)*-1;}
@@ -103,27 +99,26 @@ INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
 	INT16 reject_margin=ts->f3_ppac_reject_margin/25;
 	INT blt_event_num=1;
 	const UINT16 *p_enable_msk=NULL;
-
+        printf("F3 PPAC width: %i, offset: %i, S margin: %i, R Margin: %i \n",ts->f3_ppac_window_width,ts->f3_ppac_window_offset, ts->f3_ppac_extra_search_margin, ts->f3_ppac_reject_margin);
 	//trigger matching mode operation
 
 //	printf("Setting_trigger_acquisition mode ...");
 
+	if(! cvt_V1190_set_trigger_matching_acquisition_mode(&F3_PPAC_type, window_width, window_offset, extra_search_margin, reject_margin, CVT_V1190_ED_LEADING_ONLY,
+		CVT_V1190_PRW_100NS, p_enable_msk, 1, 1, 1)){
 
-	if(! cvt_V1190_set_trigger_matching_acquisition_mode(&F3_PPAC_type, window_width, window_offset,
-			 extra_search_margin, reject_margin, CVT_V1190_ED_LEADING_ONLY,
-			 CVT_V1190_PRW_100NS, p_enable_msk, 1, 1, 1))
-	{
-		printf("Error executing cvt_F3_PPAC_type_set_trigger_matching_acqusition_mode\n");
-		return FE_ERR_HW;
+			printf("Error executing cvt_F3_PPAC_type_set_trigger_matching_acqusition_mode\n");
+
+			return FE_ERR_HW;
+
 	}
 //	printf("Done\n");
 
-
 	//set enable subtraction of trigger time
 //	printf("Setting_enable_subtraction_of_trigger_time...");
-	if(!cvt_V1190_write_2_micro(&F3_PPAC_type, CVT_V1190_EN_SUB_TRG_OPCODE, NULL, 0))
+	if(!cvt_V1190_write_2_micro(&F3_PPAC_type, CVT_V1190_EN_SUB_TRG_OPCODE, NULL, 0)) 
 	{
-		printf("Error setting enable subtraction of trigger time\n");
+	printf("Error setting enable subtraction of trigger time\n");
 	}
 //	printf("Done\n");
 
@@ -133,8 +128,10 @@ INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
 //	printf("Setting readout mode...");
 	if(!cvt_V1190_set_readout_mode(&F3_PPAC_type, TRUE, TRUE, blt_event_num))
 	{
+
 		printf("Error executing cvt_F3_PPAC_type_set_readout_mode\n");
 		return FE_ERR_HW;
+
 	}
 //	printf("Done\n");
 
@@ -146,8 +143,8 @@ INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
 }
 
 
-INT f3_ppac_end(INT run_number, char *error)
-{
+INT f3_ppac_end(INT run_number, char *error){
+
 //	printf("\nSending data clear...");
 	if(!cvt_V1190_data_clear(&F3_PPAC_type)){printf("\nError executing software clean\n");}
 
@@ -157,8 +154,8 @@ INT f3_ppac_end(INT run_number, char *error)
 }
 
 
-INT f3_ppac_check_fifo(int32_t BHandle)
-{
+INT f3_ppac_check_fifo(int32_t BHandle){
+
 	uint32_t addr;
 	int16_t output_buffer_event;
 
@@ -169,8 +166,8 @@ INT f3_ppac_check_fifo(int32_t BHandle)
 	return output_buffer_event;
 }
 
-INT f3_ppac_read_fifo(int32_t BHandle, void *buff_tmp, int size)
-{
+INT f3_ppac_read_fifo(int32_t BHandle, void *buff_tmp, int size){
+
 	int count;
 	uint32_t addr;
 
@@ -181,29 +178,30 @@ INT f3_ppac_read_fifo(int32_t BHandle, void *buff_tmp, int size)
 	return count;
 }
 
+//uint32_t scalenumber123;
+INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata){
 
-INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata)
-{
-
-int i=0;
-int count=f3_ppac_read_fifo(BHandle, buff, buff_size);
+	int i=0;
+	int count=f3_ppac_read_fifo(BHandle, buff, buff_size);
 
 //printf("--------------- %d %d\n", nb*4, count);
 
-bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
+	bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
+//       CAEN_PLU_ReadReg(BHandle, 0x1200, &scalenumber123); //D connector 0x1200-, ch:0 (A connector 0x1100-, )
+//        printf("FW2495SC scalenumber at trigger event %u\n", scalenumber123);// /100000000
+	for(i=0; i<count/4; i++){
 
-	for(i=0; i<count/4; i++)
-	{
 		uint32_t data=buff[i];
-		switch(data&CVT_V1190_DATA_TYPE_MSK)
-		{
+		switch(data&CVT_V1190_DATA_TYPE_MSK){
+
 			case CVT_V1190_GLOBAL_HEADER:
 				{
 					UINT32 event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
-					*pdata++=event_count;
+					//*pdata++=GCOUNT;//event_count;
 					//if(event_count%1000 == 0)
-					//printf("F3PPAC_Global_header; event_count:%d\n", event_count);
+					printf("F3TDC_Global_header; event_count:%d, %lu\n", event_count,GCOUNT);
+					//printf("F3PPAC_Global_header; event id:%d\n", CVT_V1190_GET_TDC_HDR_EVENT_ID(data));
 				} break;
 
 			case CVT_V1190_TDC_MEASURE:
@@ -212,7 +210,7 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
 					*pdata++=channel;
 					*pdata++=measure;
-					printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
+					//printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 
 			case CVT_V1190_GLOBAL_TRIGGER_TIME:
@@ -227,9 +225,17 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 				#endif
 					*pdata++=f3_pp_time_tag;
 					*pdata++=global_time;
+					*pdata++=event_count;
 					//printf("F3PPAC_Global_time_tag:%d, u_time:%11f\n", global_time, (f3_pp_time_tag|global_time)*800e-9);
 				} break;
-
+			case CVT_V1190_TDC_TRAILER:
+				{
+					//UINT32 channel= CVT_V1290_GET_TDC_MSR_CHANNEL(data);
+					//UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
+					//*pdata++=channel;
+					//*pdata++=measure;
+					//printf("F3PPAC_Trailer event id; Event id:%d\n", CVT_V1190_GET_TDC_TRL_EVENT_ID(data));
+				} break;
 			default:
 				{
 					//printf("unknown data packets\n");
@@ -237,9 +243,10 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 
 		}
 	}
+	jjf3++;
+	//printf("Processeed event reading(F3 TDC): count:%d\n", jjf3);//count
+	bk_close(pevent, pdata);
 
-bk_close(pevent, pdata);
+	return bk_size(pevent);
 
-
-return bk_size(pevent);
 }

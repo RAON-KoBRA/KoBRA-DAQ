@@ -84,8 +84,8 @@ INT F2_TDC_INIT(void)
    for (i=0; i<N_TDC_f2_PPAC; i++)
    {
        //       printf("%0x\n",id);
-       sprintf(name,  "F2PA-%03x", i);
-       sprintf(title, "F2PA-%03x", i);
+       sprintf(name,  "F2PA-%03d", i);
+       sprintf(title, "F2PA-%03d", i);
        hPTDCHists_raw[i] = h1_book<TH1D>(name, title, PTAC_N_BINS, PTAC_X_LOW, PTAC_X_HIGH);
     }
 /*
@@ -147,62 +147,62 @@ INT F2_TDC_EOR(INT run_number)
 INT F2_TDC(EVENT_HEADER *pheader, void *pevent)
 {
 
-   DWORD *pdata;
+ /*  DWORD *pdata;
    int bk_size;
 
    DWORD *pdata_adc;
    int bk_size_adc;
 
-   /* look for bank, return if not present */
    bk_size = bk_locate(pevent, BANK_NAME_F2PPAC, &pdata);
    if (!bk_size) {
-      printf("no data\n");
+      printf("no F2 PPAC data\n");
       return 1;
-   }
+   }*/
 /*
    bk_size_adc = bk_locate(pevent, BANK_NAME_F3SILICON, &pdata_adc);
    if (!bk_size_adc) {
       printf("no data\n");
       return 1;
    }*/
-   int32_t event_count;
-   int32_t channel;
-   int32_t tdc_value[16];
-   uint64_t global_time_stamp;
+/*
+   int32_t event_count2;
+   int32_t channel2;
+   int32_t tdc_value2[32];
+   uint64_t global_time_stamp2;
 
-   memset(tdc_value, 0, sizeof(int32_t)*16);
-
+   memset(tdc_value2, 0, sizeof(int32_t)*16);*/
+/*
    int32_t dump;
    int32_t event_count_adc;
    int32_t channel_adc;
    int32_t ADC_value[N_ADC_f3_silicon];
 
-   memset(ADC_value, 0, sizeof(int32_t)*N_ADC_f3_silicon);
-
+   memset(ADC_value, 0, sizeof(int32_t)*N_ADC_f3_silicon);*/
+/*
 //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
-   for(int i=0; i<1; i++){event_count = *pdata++;}
+   for(int i=0; i<1; i++){event_count2 = *pdata++;}
 
    for (int i=0; i<bk_size-3; )
    {
-	   channel=*pdata++; i++;
-	   tdc_value[channel]=*pdata++; i++;
+	   channel2=*pdata++; i++;
+	   tdc_value2[channel2]=*pdata++; i++;
    }
 
    for(int i=0; i<2; )
    {
 	   uint32_t time2=*pdata++; i++;
 	   uint32_t time1=*pdata++; i++;
-	   global_time_stamp=time2|time1;
-	   printf("f2 ppac \n\n%12f, %12f, %12f\n", time2*800e-9, time1*800e-9, global_time_stamp*800e-9);
+	   global_time_stamp2=time2|time1;
+//	   printf("f2 ppac \n\n%12f, %12f, %12f\n", time2*800e-9, time1*800e-9, global_time_stamp*800e-9);
    }
 
 #if 1
    printf("F2PPAC ===============================%d\n", bk_size);
-   	 printf("event_count: %d\n",event_count);
+   	 printf("event_count: %d\n",event_count2);
    	 for(int i=0; i<N_TDC_f2_PPAC; i++){
-         if(tdc_value[i]*0.025>0)printf("channel:%d, measure:%8f\n", i, tdc_value[i]*0.025);
+         printf("channel:%d, measure:%8f\n", i, tdc_value2[i]*0.025);
   	 }
-   	 printf("global time: %12f\n", global_time_stamp*800e-9);
+//   	 printf("global time: %12f\n", global_time_stamp*800e-9);
 #endif
 
 
@@ -211,9 +211,10 @@ INT F2_TDC(EVENT_HEADER *pheader, void *pevent)
    for(int i=0; i<N_TDC_f2_PPAC; i++)
     {
     	 sprintf(name,  "F2PPAC-%03x", i);
-    	 hPTDCHists_raw[i]->Fill(tdc_value[i]*f2_tdc_cali_param.gain, 1);
+    	 hPTDCHists_raw[i]->Fill(tdc_value2[i]*f2_tdc_cali_param.gain, 1);
     }
-    if (tdc_value[0]>0 && tdc_value[1]>0 && tdc_value[0]-tdc_value[1]<5000 && tdc_value[0]-tdc_value[1]>-5000 && tdc_value[12]>0) hPXDIFFTDCHists_raw->Fill(tdc_value[0]-tdc_value[1],1);
+*/
+/*    if (tdc_value[0]>0 && tdc_value[1]>0 && tdc_value[0]-tdc_value[1]<5000 && tdc_value[0]-tdc_value[1]>-5000 && tdc_value[12]>0) hPXDIFFTDCHists_raw->Fill(tdc_value[0]-tdc_value[1],1);
     printf("FOR PPAC consistency check one = %d\n", tdc_value[0]-tdc_value[1]);
 
     if (tdc_value[2]+tdc_value[3]>1000) hPYDIFFTDCHists_raw->Fill(tdc_value[2]-tdc_value[3],1);
@@ -348,7 +349,7 @@ INT F2_TDC(EVENT_HEADER *pheader, void *pevent)
     }
 
     if (nyhit>0 && nxhit>0) {PosLarge2D->Fill(xpos[0],ypos[0],1);}
-
+*/
 /*
 
 printf("F3SILICON for PPAC2 ====================== %d\n", bk_size_adc);

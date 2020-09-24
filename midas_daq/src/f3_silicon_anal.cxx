@@ -170,10 +170,10 @@ INT F3_sili_ADC_INIT(void)
 			y_inter_indiv[line_ch] = line_interc; 
 			slope_indiv[line_ch] = line_slope;
 		    	//printf( "pedestal ch, ped= %d %f \n",line_ch, line_ped);
-			printf( "gain ch, y_inter, slope = %d %f %f\n",line_ch, y_inter_indiv[line_ch],slope_indiv[line_ch]);
+			//printf( "gain ch, y_inter, slope = %d %f %f\n",line_ch, y_inter_indiv[line_ch],slope_indiv[line_ch]);
 		   }
 	    myfileg.close();
-	printf("gain data open\n");
+	//printf("gain data open\n");
 	}
 	else printf("no gain txt");
 
@@ -482,7 +482,7 @@ INT F3_sili_EOR(INT run_number)
 	slope_indi[31] = f3->GetParameter(1);
 
 	char gainname[256];
-	sprintf(gainname,  "/home/midas/online/data/gain-%d.txt", run_number);
+//	sprintf(gainname,  "/home/midas/online/data/gain-%d.txt", run_number);
 /*
 	myfile.open (gainname);
 
@@ -501,18 +501,19 @@ INT F3_sili_EOR(INT run_number)
 INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 {
  //  INT i;
-   DWORD *pdata;
+/*   DWORD *pdata;
    DWORD *pdata_cal;
    int bk_size;
  //  int bk_size_tdc2;
  //  float *cadc;
 
-   /* look for bank, return if not present */
+
    bk_size = bk_locate(pevent, BANK_NAME_F3SILICON, &pdata);
    if (!bk_size) {
       printf("no data\n");
       return 1;
    }
+*/
 /*
    bk_size_tdc2 = bk_locate(pevent, BANK_NAME_F2PPAC, &pdata_tdc2);
    if (!bk_size_tdc2) {
@@ -521,7 +522,7 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
    }
 */
    /* create calibrated ADC bank */
-   bk_create(pevent, BANK_NAME_F3SILICON_CAL, TID_FLOAT, (void**)&pdata_cal);
+//   bk_create(pevent, BANK_NAME_F3SILICON_CAL, TID_FLOAT, (void**)&pdata_cal);
 
    /* zero cadc bank */
 //   for (i = 0; i < N_ADC_f3_silicon; i++)
@@ -542,18 +543,18 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 
 //  bk_close(pevent, cadc + N_ADC_f3_silicon);
 //  bk_close(pevent, cadc + N_ADC_f3_silicon);
-   int32_t dump;
+/*   int32_t dump;
    int32_t event_count;
    int32_t channel;
    int32_t ADC_value[N_ADC_f3_silicon];
-/*
+
    int32_t event_count_tdc2;
    int32_t channel_tdc2;
    int32_t tdc_value[N_TDC_f2_PPAC];
    uint64_t global_time_stamp;
 */
 //   memset(tdc_value, 0, sizeof(int32_t)*16);
-   memset(ADC_value, 0, sizeof(int32_t)*N_ADC_f3_silicon);
+/*   memset(ADC_value, 0, sizeof(int32_t)*N_ADC_f3_silicon);
 
    printf("F3SILICON ====================== %d\n", bk_size);
 
@@ -572,7 +573,7 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 		   if (channel>N_ADC_f3_silicon)
 		   {
 			//dump=channel;
-			printf("channel number from event_counter = %d\n", channel);
+			//printf("channel number from event_counter = %d\n", channel);
 		    	channel=*pdata++; i++;
 			//*pdata_cal++=channel;
 		   }	
@@ -581,17 +582,17 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 		   ADC_value[channel]=*pdata++; i++;
 			*pdata_cal++=channel;
 			*pdata_cal++=ADC_value[channel];
-		   printf("channel:%d, ADC value:%d\n", channel, ADC_value[channel]);
+		   //printf("channel:%d, ADC value:%d\n", channel, ADC_value[channel]);
 		   }
 	   }
 
 	   event_count=*pdata++;
 	   *pdata_cal++=event_count;
-	   printf("F3SILICON event_counter =======================%d\n", event_count);
+	   //printf("F3SILICON event_counter =======================%d\n", event_count);
 
 	   char name[256];
            //bk_close(pevent, pdata_cal);
-           printf("F3SILICON cal might be closed =======================\n");
+           //printf("F3SILICON cal might be closed =======================\n");
 	    for(int i=0; i<N_ADC_f3_silicon; i++)
 	     {
 	     	 sprintf(name,  "F3SILICON-%03d", i);
@@ -607,10 +608,12 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 			hP2DADCHists_cal->Fill(i,(ADC_value[i]-pedestal[i]-y_inter_indiv[i])/slope_indiv[i]*slope_indiv[N_ADC_f3_silicon]+y_inter_indiv[N_ADC_f3_silicon], 1);
 			hSUMADCHists_raw->Fill(ADC_value[i],1);
 		     }
+             //printf("F3SILICON ch23 =======================%d, %d\n", i, ADC_value[i]);
 	     }
-   }
+             //printf("F3SILICON ch23 =======================%d\n", ADC_value[19]);
+   }*/
    /* close calculated bank */
-   bk_close(pevent, pdata_cal);
+//   bk_close(pevent, pdata_cal);
 //   bk_close(pevent, cadc + N_ADC_f3_silicon);
 /*
 //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
