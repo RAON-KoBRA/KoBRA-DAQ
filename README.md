@@ -3,6 +3,8 @@
  
  ## MIDAS 개요
  
+ ![kobra_main](https://user-images.githubusercontent.com/38948046/94102096-440f5500-fe6c-11ea-82af-a1418eb053ca.png)
+ 
  ## 업데이트(2020-05-08)
  
    기존 개발된 DAQ는 구 버전의 Midas package를 이용하였고, 이로 인하여 c와 c++가 섞인 복잡한 구조를 갖고 있다. 근래에 컴파일러, 라이브러리, 드라이버, os 등이 업데이트 되면서 기존의 DAQ는 다음과 같은 문제점을 발생시킨다.
