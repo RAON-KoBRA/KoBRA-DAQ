@@ -45,12 +45,16 @@ mfe_v2495 업데이트. V2714 Block transfer 알고리즘의 File I/O를 이용�
 
  ## 업데이트(2020-08-31)
  mfe_v2495 업데이트: Middleware의 Internal function인 Scaler_FIFO function을 이용하여 FPGA FIFO 메모리에 접근하는 방법으로 변경됨에 따라 input 채널 구분이 더 용이해짐.
+ 
  DAQ mhttpd에서 Custom page추가 (Custom 폴더). 현재 odbedit configuration을 통해 경로가 바인드 되어 있으나, 차후 start_daq에서 형성하도록 코드 추가 필요.
  
   ## 업데이트(2020-09-21)
  이용자 검출기 대응 부분 추가( Silicon array) : mfe_silicon_ary. DAQ에서 equipment를 추가하여 따로 분리시킴.
+ 
  Custom page 업데이트, equipment 별로 다른 livetime을 표시해주며, beamrate, timetag, down scaled rate를 따로 표시함. FIFO buffer 초기화 버튼 추가됨
+ 
  odb writing 업데이트, equipment 별 다른 데이터를 유지시키는 등 FPGA 자원을 따로 관리하기 위해 ODB/CUSTOM 영역을 추가하여 FPGA 입력값을 DAQ live buffer에 저장함.
+ 
  ADC를 제외한 전체 테스트 결과 전체적인 작동상태 양호. KoBRA DAQ 1.0 단계 완성(?) 이후 추가 기능들을 점진적으로 확대 
 
 
