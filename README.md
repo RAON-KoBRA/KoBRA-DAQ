@@ -4,7 +4,7 @@
  ## MIDAS 개요
  
 ![kobra_main](https://user-images.githubusercontent.com/38948046/94102199-8e90d180-fe6c-11ea-8d35-39388c51dfa4.png)
-  <figcaption>  1. KoBRA DAQ Status Page</figcaption>
+  <figcaption>  그림1. KoBRA DAQ Status Page</figcaption>
  
  ## 업데이트(2020-05-08)
  
