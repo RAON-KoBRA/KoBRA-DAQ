@@ -28,7 +28,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*! \var     static const cvt_reg_table CVT_V1190_REG_TABLE[]
-*   \brief   The board registers table
+*   \brief   The board registers table  
 *            
 *            Provides an entry for each declared register: keep synched with \ref CVT_V1190_REG_INDEX
 */
