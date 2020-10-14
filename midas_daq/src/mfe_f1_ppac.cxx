@@ -45,7 +45,7 @@ uint32_t f1ppac_event;
 uint32_t f1ppac_event_tmp;
 uint32_t Counters_tmp_ppac;
 float ppac_time_tmp;
-
+extern uint64_t TT100;
 INT f1_ppac_init(int32_t BHandle)
 {
 	f1ppac_event = 0;
@@ -205,13 +205,17 @@ uint32_t beamline_triggered_tmp;
 INT f1_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata)
 {
 
+
+	//int wcount;
+	//CAENVME_BLTReadWait(BHandle, &wcount);
+
 int i;
 int count=f1_ppac_read_fifo(BHandle, buff, buff_size);
 
 //printf("--------------- %d %d\n", nb*4, count);
 float ppac_time;
 float live_time_f1ppac;
-
+UINT32 event_count;
 bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 
 	for(i=0; i<count/4; i++)
@@ -221,14 +225,14 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 		{
 			case CVT_V1190_GLOBAL_HEADER:
 				{
-					UINT32 event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
+					event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
 					f1ppac_event = event_count;
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 					//*pdata++=GCOUNT;//event_count;
-
-					printf("F1TDC_Global_header; event_count:%u ,%lu\n", event_count,GCOUNT);
+					*pdata++=event_count;
+					printf("F1TDC; event_count; GCOUNT; clock count:%u ,%lu, %lu\n", event_count,GCOUNT,TT100);
 					//printf("external trigger from scaler(beamline); %u\n", beamline_triggered);
-					//printf("external clock_number_lower from scaler(beamline); %u\n", clock_number_lower);
+					//printf("F1TDC external clock_number_lower from scaler(beamline); %u\n", clock_number_lower);
 				} break;
 
 			case CVT_V1190_TDC_MEASURE:
@@ -250,9 +254,9 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 global_time=time_stamp1;
 					f1_pp_time_tag=time_stamp2;
 				#endif
-					*pdata++=f1_pp_time_tag;
-					*pdata++=global_time;
-					*pdata++=event_count;
+					//*pdata++=f1_pp_time_tag;
+					//*pdata++=global_time;
+					*pdata++=GCOUNT;
   					ppac_time = (f1_pp_time_tag|global_time)*800e-9;
 					//printf("f1_Global_time_tag:%d, u_time:%11f\n", global_time, ppac_time);
 				} break;

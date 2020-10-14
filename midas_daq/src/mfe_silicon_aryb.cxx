@@ -28,6 +28,7 @@ extern "C"{
 uint32_t jjs3b = 0;
 
 uint32_t mcst_reg_orderb;
+uint32_t user_channel_b;
 
 //extern "C"{
 static cvt_V792_data SILICON_aryb_type;
@@ -37,9 +38,10 @@ uint32_t addr_aryb;
 CVErrorCodes ret_aryb;
 //}//extern
 
-
+extern uint64_t TT100; 
 extern uint32_t beamline_triggered;
 extern uint32_t u_detector_triggered;
+extern uint64_t GCOUNT;
 
 extern uint64_t TimeTag;
 uint64_t TimeTag_ary_tmpb;
@@ -89,7 +91,7 @@ INT silicon_aryb_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
 	ret_ary=(CAENVME_ReadCycle(BHandle, addr_ary, &geo_add, cvA32_S_DATA, cvD16));
 	printf("geo_add(1002) : %x\n", geo_add);
 */
-   	//==================================mcst reg for MCST address setting  
+/*   	//==================================mcst reg for MCST address setting  
 	addr_aryb=(SILICON_ARYB_ADDR<<16)|0x1004;
 	mcst_reg = 0xAA;
 	ret_aryb=(CAENVME_WriteCycle(BHandle, addr_aryb, &mcst_reg, cvA32_S_DATA, cvD16));
@@ -100,7 +102,7 @@ INT silicon_aryb_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
         mcst_reg_order = 0x01;
         ret_aryb=(CAENVME_WriteCycle(BHandle, addr_aryb, &mcst_reg_order, cvA32_S_DATA, cvD16));
 	printf("mcst_reg(1004) order: %x\n", mcst_reg_order);
-	
+*/	
 	//==================================status reg
 	addr_aryb=(SILICON_ARYB_ADDR<<16)|0x100E;
 	ret_aryb=(CAENVME_ReadCycle(BHandle, addr_aryb, &status_reg, cvA32_S_DATA, cvD16));
@@ -233,16 +235,36 @@ INT silicon_aryb_read_fifo(int32_t BHandle, void *buff_tmp, int size)
 	return count;
 }
 
-uint32_t event_countb;
+
+/*INT silicon_aryb_read_async(int32_t BHandle, void *buff_tmp, int size)
+{
+	int count;
+
+	addr_aryb=(SILICON_ARYB_ADDR<<16)|0x0000;
+	count = CAENVME_BLTReadAsync(BHandle, addr_aryb, (char*)buff_tmp, size, cvA32_S_MBLT, cvD64);
+
+	return count;
+}*/
+
+
 uint32_t u_detector_triggered_tmpb;
 uint32_t ch_check_b;
-INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata)
+INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent1, INT off, uint32_t *buff, int buff_size, uint32_t *pdata)
 {
+
+
+	//int wcount;
+	//CAENVME_BLTReadWait(BHandle, &wcount);
+
 	int i;
 	int count=silicon_aryb_read_fifo(BHandle, buff, buff_size);
+
+	//int count = silicon_aryb_read_async(BHandle, buff, buff_size);
+
 	ch_check_b = 0;
 //	printf("==============================%d\n", count);
-	bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
+	uint32_t event_countb;
+	bk_create(pevent1, bank_name, TID_DWORD, (void**)&pdata);
 
 
 	//printf("Arr approaching count loop########\n");
@@ -264,7 +286,7 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						UINT32 OV=CVT_V785_GET_DATUM_OV(data);
 						if(channel == 1) {ch_check_b++;}
 						if(ch_check_b > 1) {printf("ADC over counting,, ch_check_b = %d\n",ch_check_b); break;}
-						*pdata++=11;//channel;
+						*pdata++=channel;
 						*pdata++=measure;
 						//tmp_channel = channel;
 						//printf("(ARY B ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
@@ -278,8 +300,12 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 
 			case CVT_QTP_EOB:
 					{
+
+						user_channel_b = CVT_QTP_GET_HDR_CH_COUNT(data);
 						event_countb= CVT_QTP_GET_EOB_EVENT_COUNT(data);
 						*pdata++=event_countb;
+						*pdata++=GCOUNT;
+						printf("AADC2; event_count; GCOUNT; clock count:%u, %lu, %lu \n", event_countb, GCOUNT, TT100);
 						//printf("Processeed event reading(SB3 ADC): EOB event_count:%d\n", event_countb);
 						//printf("external trigger from scaler(ary b u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary b u_detector); %u\n", clock_number_lower);
@@ -320,9 +346,9 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 		TimeTag_ary_tmpb = TimeTag;
 		}
 	u_detector_triggered_tmpb = u_detector_triggered;
-	bk_close(pevent, pdata);
+	bk_close(pevent1, pdata);
 
-return bk_size(pevent);
+return bk_size(pevent1);
 }
 
 

@@ -8,9 +8,7 @@
 #include <memory.h>
 #include <ctype.h>
 #include <termios.h>
-#include <sys/time.h>
 #include <assert.h>
-
 
 #include <cvt_board_commons.h>
 #include <cvt_common_defs.h>
@@ -25,16 +23,9 @@
 #include "mfe.h"
 #include "msystem.h"
 #include "strlcpy.h"
+#include "msystem.h"
 
-typedef struct {
-   double total_events_sent;
-   double total_events_per_sec;
-   double livetime;
-   double total_events_sent2;
-   double total_events_per_sec2;
-   double livetime2;
-} BEAMLINE_STATS;
-
+#include "kobra.h"
 
 
 //INT status;
@@ -47,11 +38,9 @@ typedef struct {
 char *vme_base_address = "32100000";
 uint32_t vme_base_address1 = 0x3210;
 
-// timetag coordinates
-struct timespec stop, start;
+DWORD stick, stok;
 
-uint64_t utime1;
-double ttime1;
+// timetag coordinates
 
 int logi = 0;
 
@@ -63,8 +52,8 @@ int srate;
 
 uint32_t jj = 0;
 uint32_t f1ppac_event_tmp0 = 0;
+uint32_t silicon_ary_event_tmp0 = 0;
 
-uint32_t jj_tmp=0;
 uint32_t Counters_tmp=0;
 uint32_t Counters_tmp1=0;
 uint32_t Counters_tmp2=0;
@@ -73,6 +62,7 @@ uint32_t Counters_recount1=0;
 uint32_t Counters_recount2=0;
 
 float live_time; 
+double sintv;
 
 uint32_t ddata,dbuf,djj;
 char str[256],str1[128];
@@ -85,83 +75,11 @@ HNDLE hKey,hKey1;
 BEAMLINE_STATS *eq_scal;
 
 
-#define EQUIPMENT_SCAL_STR "\
-Total Events sent = DOUBLE : 0\n\
-Total Events per sec. = DOUBLE : 0\n\
-Livetime = DOUBLE : 0\n\
-2Total Events sent = DOUBLE : 0\n\
-2Total Events per sec. = DOUBLE : 0\n\
-2Livetime = DOUBLE : 0\n\
-"
+INT status = 0;
+BEAMLINE *eqr;
 
-typedef struct bline *PEQUIPMENT0;
-
-typedef struct bline {
-   char name[NAME_LENGTH];              /**< Equipment name                            */
-   EQUIPMENT_INFO info1;                 /**< From above                                */
-    INT(*readout) (char *, INT);        /**< Pointer to user readout routine           */
-    INT(*cd) (INT cmd1, PEQUIPMENT0);     /**< Class driver routine                      */
-   DEVICE_DRIVER *driver1;               /**< Device driver list                        */
-   void *event_descrip1;                 /**< Init string for fixed events or bank list */
-   void *cd_info1;                       /**< private data for class driver             */
-   INT Status1;                          /**< One of FE_xxx                             */
-   DWORD last_called1;                   /**< Last time event was read                  */
-   DWORD last_idle1;                     /**< Last time idle func was called            */
-   DWORD poll_count1;                    /**< Needed to poll 'period'                   */
-   INT format1;                          /**< FORMAT_xxx                                */
-   HNDLE buffer_handle1;                 /**< MIDAS buffer handle                       */
-   HNDLE hkey_variables1;                /**< Key to variables subtree in ODB           */
-   DWORD serial_number1;                 /**< event serial number                       */
-   DWORD subevent_number1;               /**< subevent number                           */
-   DWORD odb_out1;                       /**< # updates FE -> ODB                       */
-   DWORD odb_in1;                        /**< # updated ODB -> FE                       */
-   DWORD bytes_sent1;                    /**< number of bytes sent                      */
-   DWORD events_sent1;                   /**< number of events sent                     */
-   BEAMLINE_STATS scal;
-} BEAMLINE;
-
-
-
-BEAMLINE beamline[] = {
-  {"Trigger1 (Beamline)",            /* equipment name */
-   {1, 0,                   /* event ID, trigger mask */
-    "SYSTEM",               /* event buffer */
-    EQ_PERIODIC,
-    0,                       /* event source crate 0, all stations */
-    "MIDAS",                /* format */
-    TRUE,                   /* enabled */
-    RO_RUNNING |
-    RO_ODB,             /* read only when running */
-    10,
-    0,                      /* stop run after this event limit */
-    0,                      /* number of sub events */
-    0,                      /* don't log history */
-    "", "", "",},
-        0,      /* readout routine */
-  },
-  {"Trigger2 (Detector)",            /* equipment name */
-   {2, 0,                   /* event ID, trigger mask */
-    "SYSTEM",               /* event buffer */
-    EQ_PERIODIC,
-    0,                       /* event source crate 0, all stations */
-    "MIDAS",                /* format */
-    TRUE,                   /* enabled */
-    RO_RUNNING |
-    RO_ODB,             /* read only when running */
-    10,
-    0,                      /* stop run after this event limit */
-    0,                      /* number of sub events */
-    0,                      /* don't log history */
-    "", "", "",},
-        0,      /* readout routine */
-  },
-};
-
-
-	INT status = 0;
-	BEAMLINE *eqr;
-
-uint64_t TT100,GCOUNT;
+int icc = 0;
+uint64_t TT100,GCOUNT,GCOUNT_tmp;
 uint64_t TT100_tmp=0;
 double rat1,rat2,rat3,rat0;
 double rat11,rat12,rat13,rat10;
@@ -170,6 +88,7 @@ double rat11,rat12,rat13,rat10;
 uint32_t beamline_triggered;
 uint32_t u_detector_triggered;
 
+extern uint32_t silicon_ary_event;
 extern uint32_t f1ppac_event;
 uint64_t TimeTag;
 uint64_t TimeTag_tmp=0;
@@ -212,13 +131,13 @@ INT v2495_init(int32_t BHandle2)
 	     status = db_check_record(hDb, 0, str, EQUIPMENT_SCAL_STR, TRUE);
 	      if (status != DB_SUCCESS) {
 	         printf("Cannot create/check statistics record \'%s\', error %d\n", str, status);
-	         ss_sleep(3000);
+	         ss_sleep(500);
 	      }
 
 	      status = db_find_key(hDb, 0, str, &hKey);
 	      if (status != DB_SUCCESS) {
 	         printf("Cannot find statistics record \'%s\', error %d\n", str, status);
-	         ss_sleep(3000);
+	         ss_sleep(500);
 	      }
 
 		status = 0;
@@ -327,11 +246,10 @@ unsigned int controlregisterbitclear;
       }
 
 
+//########################################################################################################
 
 
-
-
-//#########################################################################################################
+	stick = ss_millitime();
 
 	return SUCCESS;
 }
@@ -340,6 +258,15 @@ INT v2495_exit(int32_t Bhandle)
 {
 
 	CAEN_PLU_CloseDevice(Bhandle);
+
+
+
+		      eq_scal->total_events_sent = 0;
+		      eq_scal->total_events_per_sec = 0;
+		      eq_scal->livetime = 0;
+		      eq_scal->total_events_sent2 = 0;
+		      eq_scal->total_events_per_sec2 = 0;
+		      eq_scal->livetime2 = 0;
 
 	//cvt_V1190_module_reset(&F3_PPAC_type);
 
@@ -593,6 +520,8 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 	//##########################################################################################################################################
 
+	//int wcount;
+	//CAENVME_BLTReadWait(BHandle, &wcount);
 
 
 	int i=0;
@@ -656,9 +585,8 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 			}
 
 	jj++;
-        jj_tmp++;
 	TT100 = Counters[64] + Counters64[64]*pow(2,32);
-	GCOUNT = Counters[67] + Counters64[67]*pow(2,32);
+	GCOUNT = Counters[67]; + Counters64[67]*pow(2,32);
 	Counters_recount1 = Counters[67]-Counters_tmp;
 
 	beamline_triggered = Counters[65];
@@ -673,11 +601,11 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 				eq_scal=&beamline[0].scal;
 				eq_scal->total_events_sent = Counters[65];
-				eq_scal->total_events_per_sec = (rat3+rat2+rat1+rat0+(double)Counters_recount)/5.;	// event rate for the Beamline trigger
+				eq_scal->total_events_per_sec = (double)Counters_recount;	// event rate for the Beamline trigger
 				eq_scal->livetime = (float)(f1ppac_event-f1ppac_event_tmp0)/(Counters[67]-Counters_tmp2); //
 				eq_scal->total_events_sent2 = TT100;
-				eq_scal->total_events_per_sec2 = (rat13+rat12+rat11+rat10+(double)Counters_recount2)/5.; // event rate for the Down Scaled,  Beamline trigger
-				eq_scal->livetime2 = (float)(f1ppac_event-f1ppac_event_tmp0)/(Counters[66]-Counters_tmp1);
+				eq_scal->total_events_per_sec2 = Counters_recount2; // event rate for the Down Scaled,  Beamline trigger
+				eq_scal->livetime2 = (float)(silicon_ary_event-silicon_ary_event_tmp0)/(Counters[66]-Counters_tmp1);
 
 		}
 
@@ -688,33 +616,32 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 		*pdata++=Counters64[65];
 		*pdata++=Counters[66];			// Trigger[2] counting	(User trigger, IDK could be Scaled down one? it's depend)
 		*pdata++=Counters64[66];
-		*pdata++=Counters[67];			// Triger [i] counting . . . (Scaled BLine trigger)
-		*pdata++=Counters64[67];
+		*pdata++=GCOUNT;//Counters[67];			// Triger [i] counting . . . (Scaled BLine trigger)
+		printf("F2495;              GCOUNT:                 %lu \n", GCOUNT);
+	//	*pdata++=Counters64[67];
 
 		//##############################################################################
 
-		if(TT100 >= TT100_tmp + 100000000){//reset per 1 sec.
-		jj_tmp = 0;
 
-		rat3 = rat2;
-		rat2 = rat1;
-		rat1 = rat0;
-		rat0 = (double)Counters_recount;
+		stok = ss_millitime();
+		sintv = (double)(stok - stick)/1000.;
 
-		rat13 = rat12;
-		rat12 = rat11;
-		rat11 = rat10;
-		rat10 = (double)Counters_recount2;
+		if(sintv > 2.){//reset per 3 sec.
 
-		Counters_recount = Counters[65]-Counters_tmp;
-		Counters_recount2 = Counters[67]-Counters_tmp2;
 
-		Counters_tmp = Counters[65];
-		Counters_tmp1 = Counters[66];
-		Counters_tmp2 = Counters[67];
-		f1ppac_event_tmp0 = f1ppac_event;
 
-		TT100_tmp = TT100;
+			Counters_recount = (double)(Counters[65]-Counters_tmp)/sintv;
+			Counters_recount2 = (double)(Counters[67]-Counters_tmp2)/sintv;
+
+			Counters_tmp = Counters[65];
+			Counters_tmp1 = Counters[66];
+			Counters_tmp2 = Counters[67];
+			f1ppac_event_tmp0 = f1ppac_event;
+			silicon_ary_event_tmp0 = silicon_ary_event;
+
+			GCOUNT_tmp=GCOUNT;
+			//TT100_tmp = TT100;
+			stick = ss_millitime();
 		}
 
 	}

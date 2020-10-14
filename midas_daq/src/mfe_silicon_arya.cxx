@@ -24,35 +24,78 @@ extern "C"{
 #include "mfe_ADC.h"
 #include "odb_trigger.h"
 #include "detector_conf.h"
+#include "kobra_user.h"
+#include "msystem.h"
 
-uint32_t jjs3 = 0;
 
+
+BEAMLINE_STATS *eq_user;
+INT statusa = 0;
+BEAMLINE *eqa;
+
+HNDLE hDba = 1;
+HNDLE hKeya;
+
+DWORD tick, tok;
+
+char stra[256];
+
+extern uint32_t user_channel_b;
+uint32_t user_channel_a;
 uint32_t mcst_reg_order;
+uint32_t silicon_ary_event;
 
-//extern "C"{
 static cvt_V792_data SILICON_arya_type;
-//}
 
 uint32_t addr_ary;
 CVErrorCodes ret_ary;
-//}//extern
 
-extern uint64_t TT100; 
+extern uint64_t TT100;
 extern uint32_t beamline_triggered;
 extern uint32_t u_detector_triggered;
 
 extern uint64_t TimeTag;
 uint64_t TimeTag_ary_tmp;
+extern uint64_t GCOUNT;
 
 uint32_t u_detector_event_tmp;
 uint32_t Counters_tmp_udetector;
 
 int iia ,iib, iic;
+uint32_t jjs3 = 0;
 
-
+float erate,drate,intv, ediff;
+uint32_t event_count_tmp;
 
 INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
 {
+
+	sprintf(stra, "/Custom/%s",detector[0].name);
+
+	db_create_key(hDba, 0, stra, TID_KEY);
+	db_find_key(hDba,0, stra, &hKeya);
+
+
+	     statusa = db_check_record(hDba, 0, stra, EQUIPMENT_SCAL_STR, TRUE);
+	      if (statusa != DB_SUCCESS) {
+	         printf("Cannot create/check statistics record \'%s\', error %d\n", stra, statusa);
+	         ss_sleep(500);
+	      }
+
+	      statusa = db_find_key(hDba, 0, stra, &hKeya);
+	      if (statusa != DB_SUCCESS) {
+	         printf("Cannot find statistics record \'%s\', error %d\n", stra, statusa);
+	         ss_sleep(500);
+	      }
+
+		statusa = 0;
+		eqa = NULL;
+
+		eq_user = &detector[0].dstat;
+		eq_user->events = 0;
+		eq_user->events_per_sec = 0;
+		eq_user->data_per_sec = 0;
+
   u_detector_event_tmp = 0;
   Counters_tmp_udetector = 0;
   TimeTag_ary_tmp = 0;
@@ -90,7 +133,7 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
 	addr_ary=(SILICON_ARY_ADDR<<16)|0x1002;
 	ret_ary=(CAENVME_ReadCycle(BHandle, addr_ary, &geo_add, cvA32_S_DATA, cvD16));
 	printf("geo_add(1002) : %x\n", geo_add);
-*/
+*//*
    	//==================================mcst reg for MCST address setting  
 	addr_ary=(SILICON_ARYA_ADDR<<16)|0x1004;
 	mcst_reg = 0xAA;
@@ -107,7 +150,7 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
 	addr_ary=(SILICON_ARYA_ADDR<<16)|0x100A;
 	interrupt_level_write = 1;
 	ret_ary=(CAENVME_WriteCycle(BHandle, addr_ary, &interrupt_level_write, cvA32_S_DATA, cvD16));
-
+*/
 	//==================================interrupt level
 	addr_ary=(SILICON_ARYA_ADDR<<16)|0x100A;
 	ret_ary=(CAENVME_ReadCycle(BHandle, addr_ary, &interrupt_level, cvA32_S_DATA, cvD16));
@@ -122,12 +165,12 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
 	addr_ary=(SILICON_ARYA_ADDR<<16)|0x100E;
 	ret_ary=(CAENVME_ReadCycle(BHandle, addr_ary, &status_reg, cvA32_S_DATA, cvD16));
 	printf("status_reg(100E) : %x\n", status_reg);
-	
+	/*
 	//==================================event trigger register write
 	addr_ary=(SILICON_ARYA_ADDR<<16)|0x1020;
 	evt_tri_write = 1;
 	ret_ary=(CAENVME_WriteCycle(BHandle, addr_ary, &evt_tri_write, cvA32_S_DATA, cvD16));
-
+*/
 	//==================================event trigger register
 	addr_ary=(SILICON_ARYA_ADDR<<16)|0x1020;
 	ret_ary=(CAENVME_ReadCycle(BHandle, addr_ary, &evt_tri, cvA32_S_DATA, cvD16));
@@ -193,6 +236,31 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
 	ret_ary=static_cast<CVErrorCodes>(silicon_arya_clear_buffer(BHandle));
 	printf("Done");
 
+
+//########################	Passive record of new odb tree	######################################
+
+
+    statusa = db_open_record(hDba, hKeya, eq_user, sizeof(BEAMLINE_STATS), MODE_WRITE, NULL, NULL);
+      if (statusa == DB_NO_ACCESS) {
+
+        statusa = db_set_mode(hDba, hKeya, MODE_READ | MODE_WRITE | MODE_DELETE, TRUE);
+         if (statusa != DB_SUCCESS)
+            cm_msg(MERROR, "register_equipment", "Cannot change access mode for record \'%s\', error %d", stra, statusa);
+         else
+            cm_msg(MINFO, "register_equipment", "Recovered access mode for record \'%s\'", stra);
+         statusa = db_open_record(hDba, hKeya, eq_user, sizeof(BEAMLINE_STATS), MODE_WRITE, NULL, NULL);
+      }
+      if (statusa != DB_SUCCESS) {
+         cm_msg(MERROR, "register_equipment", "Cannot open statistics record, error %d. Probably other FE is using it", statusa);
+         ss_sleep(3000);
+      }
+
+//#######################################################################################################
+
+
+
+
+
 	return SUCCESS;
 }
 
@@ -200,6 +268,11 @@ INT silicon_arya_exit(int32_t BHandle)
 {
 	silicon_arya_clear_buffer(BHandle);
 	cvt_V792_close(&SILICON_arya_type);
+
+	eq_user->events_per_sec = 0;
+	eq_user->data_per_sec = 0;
+	eq_user->events = 0;
+
 	return SUCCESS;
 }
 
@@ -207,6 +280,9 @@ INT silicon_arya_exit(int32_t BHandle)
 
 INT silicon_arya_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SETTINGS_SILICONARY *ts)
 {
+
+	tick = ss_millitime(); 
+
 	/*
 	uint16_t reg_value, c_reg_value;
 
@@ -234,6 +310,10 @@ INT silicon_arya_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SET
 INT silicon_arya_end(int32_t BHandle, INT run_number, char *error)
 {
 	cvt_V792_data_clear(&SILICON_arya_type);
+
+
+
+
 	return SUCCESS;
 }
 
@@ -260,20 +340,44 @@ INT silicon_arya_read_fifo(int32_t BHandle, void *buff_tmp, int size)
 	return count;
 }
 
-uint32_t event_count;
+
+INT silicon_arya_read_async(int32_t BHandle, void *buff_tmp, int size)
+{
+	int count;
+
+	addr_ary=(SILICON_ARYA_ADDR<<16)|0x0000;
+	count = CAENVME_BLTReadAsync(BHandle, addr_ary, (char*)buff_tmp, size, cvA32_S_MBLT, cvD64);
+
+	return count;
+}
+
+
+
 uint32_t u_detector_triggered_tmp;
 uint32_t ch_check;
 INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata)
 {
 	int i;
+	uint32_t event_count;
+
+	float pdsize= 0.000001*4;		// size of data buffer per event channel
+
+	//int qcount;
+	//CAENVME_BLTReadWait(BHandle, &qcount);
+
 	int count=silicon_arya_read_fifo(BHandle, buff, buff_size);
+	//int count;	
+
+	//count=silicon_arya_read_async(BHandle, buff, buff_size);
 	ch_check = 0;
 //	printf("==============================%d\n", count);
+	
 	bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 
 
 	//printf("Arr approaching count loop########\n");
 	iia = iib = iic = 0;
+
 
 
 //        UINT32 tmp_channel = 999;
@@ -297,7 +401,7 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						//printf("(S3 ARY A ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
 						//printf("external trigger from scaler(ary a u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary a u_detector); %u\n", clock_number_lower);
-						
+
 						iia++;
 
 					} break;
@@ -306,10 +410,36 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 			case CVT_QTP_EOB:
 					{
 						event_count= CVT_QTP_GET_EOB_EVENT_COUNT(data);
+						user_channel_a = CVT_QTP_GET_HDR_CH_COUNT(data);
 						*pdata++=event_count;
+						*pdata++=GCOUNT;
 
-						//printf("Processeed event reading(SA3 ADC): EOB event_count, clock count:%d, %lu\n", event_count, TT100 );
+						tok = ss_millitime();			
+			
+						eq_user = &detector[0].dstat;
+						eq_user->events = event_count;
 
+						silicon_ary_event = event_count;
+						intv = (float)(tok - tick)/1000.;
+
+						if(intv > 3.){
+
+							
+							ediff = event_count - event_count_tmp;
+							erate = (float)ediff/(float)intv;
+							drate = pdsize*ediff*(float)(user_channel_a + user_channel_b)/intv;
+
+							eq_user->events_per_sec = erate;
+							eq_user->data_per_sec = drate;
+							
+							event_count_tmp = event_count;		
+							tick = ss_millitime();
+
+						}
+
+
+
+						printf("AADC1; event_count; GCOUNT; clock count:%u, %lu, %lu\n", event_count, GCOUNT, TT100);
 						//printf("external trigger from scaler(ary a u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary a u_detector); %u\n", clock_number_lower);
 						//printf("external clock_number_ from scaler(ary a u_detector); %u\n", clock_number_upper);

@@ -24,7 +24,7 @@ static cvt_V1190_data F3_PPAC_type;
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
 extern uint64_t GCOUNT;
-
+extern uint64_t TT100;
 UINT32 f3_pp_f_time;
 UINT64 f3_pp_time_tag;
 
@@ -181,9 +181,12 @@ INT f3_ppac_read_fifo(int32_t BHandle, void *buff_tmp, int size){
 //uint32_t scalenumber123;
 INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata){
 
+	//int wcount;
+	//CAENVME_BLTReadWait(BHandle, &wcount);
+
 	int i=0;
 	int count=f3_ppac_read_fifo(BHandle, buff, buff_size);
-
+	UINT32 event_count;
 //printf("--------------- %d %d\n", nb*4, count);
 
 	bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
@@ -196,11 +199,12 @@ INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT
 
 			case CVT_V1190_GLOBAL_HEADER:
 				{
-					UINT32 event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
+					event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 					//*pdata++=GCOUNT;//event_count;
 					//if(event_count%1000 == 0)
-					printf("F3TDC_Global_header; event_count:%d, %lu\n", event_count,GCOUNT);
+					*pdata++=event_count;
+					printf("F3TDC; event_count; GCOUNT; clock count:%u ,%lu, %lu\n", event_count,GCOUNT,TT100);
 					//printf("F3PPAC_Global_header; event id:%d\n", CVT_V1190_GET_TDC_HDR_EVENT_ID(data));
 				} break;
 
@@ -223,17 +227,13 @@ INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT
 					UINT32 global_time=time_stamp1;
 					f3_pp_time_tag=time_stamp2;
 				#endif
-					*pdata++=f3_pp_time_tag;
-					*pdata++=global_time;
-					*pdata++=event_count;
+					//*pdata++=f3_pp_time_tag;
+					//*pdata++=global_time;
+					*pdata++=GCOUNT;
 					//printf("F3PPAC_Global_time_tag:%d, u_time:%11f\n", global_time, (f3_pp_time_tag|global_time)*800e-9);
 				} break;
 			case CVT_V1190_TDC_TRAILER:
 				{
-					//UINT32 channel= CVT_V1290_GET_TDC_MSR_CHANNEL(data);
-					//UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
-					//*pdata++=channel;
-					//*pdata++=measure;
 					//printf("F3PPAC_Trailer event id; Event id:%d\n", CVT_V1190_GET_TDC_TRL_EVENT_ID(data));
 				} break;
 			default:
