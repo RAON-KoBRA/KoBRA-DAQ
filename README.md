@@ -68,6 +68,11 @@ mfe_v2495 업데이트. 전 업데이트에서 언급한 방법대로, V2714 Blo
  ADC를 제외한 전체 테스트 결과 전체적인 작동상태 양호. KoBRA DAQ 1.0 단계 완성(?) 이후 추가 기능들을 점진적으로 확대해 나갈것. 
 
 
+## 업데이트 (2020-10-14)
+  Multiple Equipment Configuration에서 최적화 문제로 인해 Single Equipment Configuration으로 변경. 개별 Equipment statistics 정보는 별도의 Bank를 정의해서 저장하고, 이를 같은 방식으로 테이블에서 모니터링 하도록 변경함. 현재 ~1000 /sec 에서 부터 ADC의 불안정성이 나타남. 실제 채널에 Input을 넣었을 때도 같은 현상이 지속되는지 확인이 필요함. Rate 계산을 위한 Timing 함수는 Midas의 mstystem.h 내의 함수가 이용됨. 보조 PC (DAQ Control) PC 및 F3챔버 테스트 진행 후 결과를 바탕으로 일부 기능 수정 
+
+
+
 
 ## References
 - [MIDAS wiki]( https://midas.triumf.ca/MidasWiki/index.php/Main_Page)
