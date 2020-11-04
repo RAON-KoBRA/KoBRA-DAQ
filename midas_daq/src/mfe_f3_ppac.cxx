@@ -21,10 +21,20 @@
 
 static cvt_V1190_data F3_PPAC_type;
 
+uint32_t f3ppac_event;
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
+//bf f3 test
 extern uint64_t GCOUNT;
 extern uint64_t TT100;
+/*
+uint32_t u_detector_triggered;
+uint64_t GCOUNT;
+uint64_t TT100;
+uint64_t TimeTag;
+*//// test end
+
+
 UINT32 f3_pp_f_time;
 UINT64 f3_pp_time_tag;
 
@@ -159,11 +169,12 @@ INT f3_ppac_check_fifo(int32_t BHandle){
 	uint32_t addr;
 	int16_t output_buffer_event;
 
-	addr = (F3_PPAC_ADDR<<16)|CVT_V1190_EVENT_STORED_ADD;
-	CAENVME_ReadCycle(BHandle, addr, &output_buffer_event, CVT_V1190_EVENT_STORED_AM, CVT_V1190_EVENT_STORED_DATA_SIZE);
+	addr = (F3_PPAC_ADDR<<16)|CVT_V1190_OUT_BUFFER_ADD;
+	//addr = (F3_PPAC_ADDR<<16)|CVT_V1190_EVENT_STORED_ADD;
+	CAENVME_ReadCycle(BHandle, addr, &output_buffer_event, cvA32_S_DATA, cvD16);
 
 
-	return output_buffer_event;
+	return output_buffer_event&0x001;
 }
 
 INT f3_ppac_read_fifo(int32_t BHandle, void *buff_tmp, int size){
@@ -200,11 +211,12 @@ INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT
 			case CVT_V1190_GLOBAL_HEADER:
 				{
 					event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
+					f3ppac_event = event_count;
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 					//*pdata++=GCOUNT;//event_count;
 					//if(event_count%1000 == 0)
 					*pdata++=event_count;
-					printf("F3TDC; event_count; GCOUNT; clock count:%u ,%lu, %lu\n", event_count,GCOUNT,TT100);
+					//if(jjf3%500 ==0)printf("F3TDC; event_count; GCOUNT; clock count:%u ,%lu, %lu\n", event_count,GCOUNT,TT100);
 					//printf("F3PPAC_Global_header; event id:%d\n", CVT_V1190_GET_TDC_HDR_EVENT_ID(data));
 				} break;
 
@@ -214,6 +226,7 @@ INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT
 					UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
 					*pdata++=channel;
 					*pdata++=measure;
+					//printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 					//printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 

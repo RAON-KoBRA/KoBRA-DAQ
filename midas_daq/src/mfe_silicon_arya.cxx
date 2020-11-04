@@ -52,11 +52,11 @@ CVErrorCodes ret_ary;
 
 extern uint64_t TT100;
 extern uint32_t beamline_triggered;
-extern uint32_t u_detector_triggered;
+extern uint32_t u_detector_triggered; //extern
 
-extern uint64_t TimeTag;
+extern uint64_t TimeTag; //TimeTag
 uint64_t TimeTag_ary_tmp;
-extern uint64_t GCOUNT;
+extern uint64_t GCOUNT; //extern
 
 uint32_t u_detector_event_tmp;
 uint32_t Counters_tmp_udetector;
@@ -67,7 +67,7 @@ uint32_t jjs3 = 0;
 float erate,drate,intv, ediff;
 uint32_t event_count_tmp;
 
-INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
+INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS_BEAMLINE *ts)
 {
 
 	sprintf(stra, "/Custom/%s",detector[0].name);
@@ -278,7 +278,7 @@ INT silicon_arya_exit(int32_t BHandle)
 
 
 
-INT silicon_arya_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SETTINGS_SILICONARY *ts)
+INT silicon_arya_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SETTINGS_BEAMLINE *ts)
 {
 
 	tick = ss_millitime(); 
@@ -378,7 +378,7 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 	//printf("Arr approaching count loop########\n");
 	iia = iib = iic = 0;
 
-
+	
 
 //        UINT32 tmp_channel = 999;
 	for(i=0; i<count/4; i++)
@@ -394,11 +394,11 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						UINT32 UV=CVT_V785_GET_DATUM_UN(data);
 						UINT32 OV=CVT_V785_GET_DATUM_OV(data);
 						if(channel == 1) {ch_check++;}
-						if(ch_check > 1) {printf("ADC over counting,, ch_check = %d\n",ch_check); break;}
+						//if(jjs3%500 == 0) if(ch_check > 1) {printf("ADC over counting,, ch_check = %d\n",ch_check); break;}
 						*pdata++=channel;
 						*pdata++=measure;
 						//tmp_channel = channel;
-						//printf("(S3 ARY A ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
+						if(channel > 15 && channel < 24)printf("(ARY A ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
 						//printf("external trigger from scaler(ary a u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary a u_detector); %u\n", clock_number_lower);
 
@@ -439,7 +439,7 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 
 
 
-						printf("AADC1; event_count; GCOUNT; clock count:%u, %lu, %lu\n", event_count, GCOUNT, TT100);
+						//if(jjs3%500 == 0)printf("AADC1; event_count; GCOUNT; clock count:%u, %lu, %lu\n", event_count, GCOUNT, TT100);
 						//printf("external trigger from scaler(ary a u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary a u_detector); %u\n", clock_number_lower);
 						//printf("external clock_number_ from scaler(ary a u_detector); %u\n", clock_number_upper);

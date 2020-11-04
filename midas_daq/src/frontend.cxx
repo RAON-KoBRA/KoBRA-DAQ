@@ -38,7 +38,7 @@
 static HNDLE hDB_odb;
 static HNDLE hDB_odb_ary;
 static TRIGGER_SETTINGS_BEAMLINE tr_set;
-static TRIGGER_SETTINGS_SILICONARY tr_set_ary;
+//static TRIGGER_SETTINGS_SILICONARY tr_set_ary;
 
 uint32_t time_stamp1;
 uint32_t time_stamp2;
@@ -88,7 +88,7 @@ INT frontend_loop();
 
 INT read_trigger_event(char *pevent, INT off);
 INT BLT_block_comm(int32_t BHandler, int counter);
-INT read_silicon_event(char *pevent1, INT off);
+INT read_silicon_event(char *pevent, INT off);
 
 INT poll_event(INT source, INT count, BOOL test);
 INT interrupt_configure(INT cmd, INT source, POINTER_T adr);
@@ -217,7 +217,7 @@ libtigfunc.o
 /*-- Frontend Init -------------------------------------------------*/
 
 static int32_t BHandle;
-static int32_t BHandle2;
+
 int handle;
 
 
@@ -242,12 +242,12 @@ INT frontend_init() {
 
   INT ret;
 
-  v2495_init(BHandle); // v2495 intialization take v2718 together
+ // v2495 intialization take v2718 together
 
   // Set ODB
 
-  ret = set_odb(&hDB_odb, equipment[0].name, ts_str_kd, "kobra_detectors", &tr_set, sizeof(TRIGGER_SETTINGS_BEAMLINE));
-  if ( ret != SUCCESS ) return ret;
+  //ret = set_odb(&hDB_odb, equipment[0].name, ts_str_kd, "kobra_detectors", &tr_set, 816);//sizeof(TRIGGER_SETTINGS_BEAMLINE));
+  //if ( ret != SUCCESS ) return ret;
 
  /* ret = set_odb(&hDB_odb_ary, equipment[1].name, ts_str_kd_ary, "silicon array detectors", &tr_set_ary, sizeof(TRIGGER_SETTINGS_SILICONARY));
   if ( ret != SUCCESS ) return ret;*/
@@ -255,13 +255,13 @@ INT frontend_init() {
   //VME initialization
 
         short Link=0;
-  	short Device=1;
+  	short Device=0;
         CVBoardTypes VMEBoard = cvV2718;
 
         printf("\n1st V2718 initialization...");
 
   	//Make sure V2718 opened OK!
-  	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle2)!=cvSuccess){
+  	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle)!=cvSuccess){
   		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718_board1");
   		return FE_ERR_HW;
   	}
@@ -272,6 +272,25 @@ INT frontend_init() {
 	CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x36), &Rotaryswitch);
 	printf("1st Controller rotary switch:%i\n", Rotaryswitch);
 
+
+/*
+char *vme_base_address = "32100000";
+
+                ret = CAEN_PLU_OpenDevice(CAEN_PLU_CONNECT_VME_V2718, vme_base_address, 0, 0, &BHandle);
+                if (ret != CAEN_PLU_OK) {
+                        printf("Error %d\n", ret);
+                        exit(0);
+                }
+
+unsigned int Rotaryswitch;
+
+
+
+
+	CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x36), &Rotaryswitch);
+	printf("1st Controller rotary switch:%i\n", Rotaryswitch);
+
+ v2495_init(BHandle); */
 	char str0[256];
 	char str00[128];
 
@@ -281,62 +300,55 @@ INT frontend_init() {
 
 
 
-#ifdef USE_PPAC_F1
-  	f1_ppac_init(BHandle);
-#endif
+
 
 #ifdef USE_SILICON_ARYA
-  	silicon_arya_init(BHandle2, &tr_set_ary);
+  	silicon_arya_init(BHandle, &tr_set);//tr_set_ary->tr_set
 #endif
 
 #ifdef USE_SILICON_ARYB
-  	silicon_aryb_init(BHandle2, &tr_set_ary);
+  	silicon_aryb_init(BHandle, &tr_set);//tr_set_ary->tr_set
 #endif
   	//hardware initialization
-  	printf("\n2nd V2718 initialization..."); 
-/*
+/*  	printf("\n2nd V2718 initialization..."); 
+
   	Link=0;
   	Device=1;
 //	unsigned int Rotaryswitch;
   	//Make sure V2718 opened OK!
- 	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle2)!=cvSuccess){
+ 	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle)!=cvSuccess){
   		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718_board2");
   		return FE_ERR_HW;
-  	}*/
+  	}
   	printf("Done\n");
 
-	CAENVME_ReadRegister(BHandle2, static_cast<CVRegisters>(0x36), &Rotaryswitch);
+	CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x36), &Rotaryswitch);
 	printf("2nd Controller rotary switch:%i\n", Rotaryswitch);
+*/
 
 
 
 
-
-#ifdef USE_SILICON_F3
- 	f3_silicon_init(BHandle, &tr_set);
-#endif
 
 /*
 #ifdef USE_PLASTIC_F3
-  	f3_plastic_init(BHandle2);
+  	f3_plastic_init(BHandle);
 #endif
 */
 #ifdef USE_PPAC_F3
   	f3_ppac_init(BHandle);
 #endif
 
-#ifdef USE_PPAC_F2
-  	f2_ppac_init(BHandle);
-#endif
+
 
 
 //	Creat Link for the KOBRA DAQ STATUS PAGE
- 	sprintf(str00,"/home/kobradaq/%s","online/midas_daq/custom/custom.html");
+ /*	sprintf(str00,"/home/kobradaq/%s","online/midas_daq/custom/custom.html");
 	sprintf(str0, "/Custom/%s", "custom page&");
 
 	db_set_value(1, 0, str0, str00, 128, 1, TID_STRING);
 
-
+*/
 
 
 	printf("\n==========  Enjoy!\n");
@@ -352,45 +364,36 @@ INT frontend_init() {
 /*-- Frontend Exit -------------------------------------------------*/
 
 INT frontend_exit() {
-
+/*
 #ifdef USE_V2495
 	v2495_exit(BHandle);
 	free(v2495_buff);
-#endif
+#endif*/
 
 #ifdef USE_SILICON_ARYA
-	silicon_arya_exit(BHandle2);
+	silicon_arya_exit(BHandle);
 	free(silicon_arya_buff);
 #endif
 
 #ifdef USE_SILICON_ARYB
-	silicon_aryb_exit(BHandle2);
+	silicon_aryb_exit(BHandle);
 	free(silicon_aryb_buff);
 #endif
 
-#ifdef USE_PPAC_F1
-	f1_ppac_exit();
-	free(f1_ppac_buff);
-#endif
+
 /*
 #ifdef USE_PLASTIC_F1
 	f1_plastic_exit();
 	free(f1_plastic_buff);
 #endif
 */
-#ifdef USE_PPAC_F2
-	f2_ppac_exit();
-	free(f2_ppac_buff);
-#endif
 
-#ifdef USE_SILICON_F3
-	f3_silicon_exit(BHandle);
-	free(f3_silicon_buff);
-#endif
+
+
 
 /*
 #ifdef USE_PLASTIC_F3
-	f3_plastic_exit(BHandle2);
+	f3_plastic_exit(BHandle);
 	free(f3_plastic_buff);
 #endif
 */
@@ -412,40 +415,31 @@ INT begin_of_run(INT run_number, char *error) {
 //scaler_low=0; 
 
 //BOP=1;
-
+/*
 #ifdef USE_V2495
 	v2495_buff = static_cast<uint32_t*>( malloc(SCALER_DATA_BUFF_SIZE));
 #endif
-
+*/
 #ifdef USE_SILICON_ARYA
 	silicon_arya_buff= static_cast<uint32_t*>(malloc(DATA_BUFF_SIZE));
-	silicon_arya_begin(BHandle2, run_number, error, &tr_set_ary);
+	silicon_arya_begin(BHandle, run_number, error, &tr_set);//tr_set_ary->tr_set
 #endif
 
 #ifdef USE_SILICON_ARYB
 	silicon_aryb_buff= static_cast<uint32_t*>(malloc(DATA_BUFF_SIZE));
-	silicon_aryb_begin(BHandle2, run_number, error, &tr_set_ary);
+	silicon_aryb_begin(BHandle, run_number, error, &tr_set);//tr_set_ary->tr_set
 #endif
 
-#ifdef USE_PPAC_F1
-	f1_ppac_buff= static_cast<uint32_t*>( malloc(DATA_BUFF_SIZE));
-	f1_ppac_begin(run_number, error, &tr_set);
-#endif
+
 /*
 #ifdef USE_PLASTIC_F1
 	f1_plastic_buff=malloc(DATA_BUFF_SIZE);
 	f1_plastic_begin(run_number, error, &tr_set);
 #endif
 */
-#ifdef USE_PPAC_F2
-	f2_ppac_buff= static_cast<uint32_t*>( malloc(DATA_BUFF_SIZE));
-	f2_ppac_begin(run_number, error, &tr_set);
-#endif
 
-#ifdef USE_SILICON_F3
-	f3_silicon_buff= static_cast<uint32_t*>(malloc(DATA_BUFF_SIZE));
-	f3_silicon_begin(BHandle, run_number, error, &tr_set);
-#endif
+
+
 
 /*
 #ifdef USE_PLASTIC_F3
@@ -465,25 +459,13 @@ INT begin_of_run(INT run_number, char *error) {
 
 INT end_of_run(INT run_number, char *error) {
 
-#ifdef USE_PPAC_F1
-	f1_ppac_end(run_number, error);
-	free(f1_ppac_buff);
-#endif
+
 /*
 #ifdef USE_PLASTIC_F1
 	f1_plastic_end(run_number, error);
 	free(f1_plastic_buff);
 #endif
 */
-#ifdef USE_PPAC_F2
-	f2_ppac_end(run_number, error);
-	free(f2_ppac_buff);
-#endif
-
-#ifdef USE_SILICON_F3
-	f3_silicon_end(BHandle, run_number, error);
-	free(f3_silicon_buff);
-#endif
 
 /*
 #ifdef USE_PLASTIC_F3
@@ -497,16 +479,16 @@ INT end_of_run(INT run_number, char *error) {
 #endif
 
 #ifdef USE_SILICON_ARYA
-	silicon_arya_end(BHandle2, run_number, error);
+	silicon_arya_end(BHandle, run_number, error);
 	free(silicon_arya_buff);
 #endif
 
 #ifdef USE_SILICON_ARYB
-	silicon_aryb_end(BHandle2, run_number, error);
+	silicon_aryb_end(BHandle, run_number, error);
 	free(silicon_aryb_buff);
 #endif
 
-  char *vme_base_address = "32100000";
+/*  char *vme_base_address = "32100000";
 
   CAEN_PLU_ERROR_CODE ret_2495;
 
@@ -521,7 +503,7 @@ INT end_of_run(INT run_number, char *error) {
 
   printf("PLU stopped OK\n");
   free(v2495_buff);
-
+*/
   return SUCCESS;
 
 }
@@ -549,7 +531,7 @@ INT resume_run(INT run_number, char *error) {
 INT frontend_loop() {
 
 	unsigned int timebomb;
-	CAEN_PLU_ReadReg(BHandle2, 0x1040, &timebomb);
+	CAEN_PLU_ReadReg(BHandle, 0x1040, &timebomb);
         printf("FW2495SC timebomb at loop %x\n", timebomb);
 
 	return SUCCESS;
@@ -562,13 +544,13 @@ INT frontend_loop() {
 INT poll_event(INT source, INT count, BOOL test) {
 
 	uint lam=0;
-	lam=f3_ppac_check_fifo(BHandle) || silicon_arya_check_fifo(BHandle2);
-	//lam=silicon_ary_check_fifo(BHandle2);
-	//lam=(f3_ppac_check_fifo(BHandle2)||f1_ppac_check_fifo(BHandle));
-        //lam=f3_silicon_check_fifo(BHandle2);
+	lam= silicon_arya_check_fifo(BHandle) || silicon_aryb_check_fifo(BHandle);
+	//lam=silicon_ary_check_fifo(BHandle);
+	//lam=(f3_ppac_check_fifo(BHandle)||f1_ppac_check_fifo(BHandle));
+        //lam=f3_silicon_check_fifo(BHandle);
 /*
 #ifdef USE_V2495
-//	lam=v2495_check_fifo(BHandle2);
+//	lam=v2495_check_fifo(BHandle);
 #endif
 
 #ifndef USE_PLASTIC_F3
@@ -594,11 +576,11 @@ INT poll_event(INT source, INT count, BOOL test) {
 	#endif
 
 	#ifdef USE_SILICON_F3
-	lam=f3_silicon_check_fifo(BHandle2);
+	lam=f3_silicon_check_fifo(BHandle);
 	#endif
 
         #ifdef USE_PPAC_F3
-	//lam=f3_ppac_check_fifo(BHandle2);
+	//lam=f3_ppac_check_fifo(BHandle);
  	lam=silicon_ary_check_fifo(BHandle);
 	#endif
 
@@ -609,7 +591,7 @@ INT poll_event(INT source, INT count, BOOL test) {
 #endif
 
 #ifdef USE_PLASTIC_F3
-	lam=f3_plastic_check_fifo(BHandle2);
+	lam=f3_plastic_check_fifo(BHandle);
 #endif
 */
 /*
@@ -668,17 +650,14 @@ INT read_trigger_event(char *pevent, INT off) {
 
 	bk_init(pevent);
 
-
+/*
 #ifdef USE_V2495
 	uint32_t *v2495_data;
 	v2495_read_event(BHandle, BANK_NAME_SCALER, pevent, off, v2495_buff, SCALER_DATA_BUFF_SIZE, v2495_data);
 #endif
+*/
 
 
-#ifdef USE_PPAC_F1
-	uint32_t *f1ppac_data;
-	f1_ppac_read_event(BHandle, BANK_NAME_F1PPAC, pevent, off, f1_ppac_buff, DATA_BUFF_SIZE, f1ppac_data);
-#endif
 
 /*
 #ifdef USE_PLASTIC_F1
@@ -688,15 +667,7 @@ INT read_trigger_event(char *pevent, INT off) {
 */
 
 	
-#ifdef USE_PPAC_F2
-	uint32_t *f2ppac_data;
-	f2_ppac_read_event(BHandle, BANK_NAME_F2PPAC, pevent, off, f2_ppac_buff, DATA_BUFF_SIZE, f2ppac_data);
-#endif
 
-#ifdef USE_SILICON_F3
-	uint32_t *f3silicon_data;
-	f3_silicon_read_event(BHandle, BANK_NAME_F3SILICON, pevent, off, f3_silicon_buff, DATA_BUFF_SIZE, f3silicon_data);
-#endif
 
 #ifdef USE_PPAC_F3
 	uint32_t *f3ppac_data;
@@ -705,12 +676,12 @@ INT read_trigger_event(char *pevent, INT off) {
 
 #ifdef USE_SILICON_ARYA
 	uint32_t *siliconarya_data;
-	silicon_arya_read_event(BHandle2, BANK_NAME_U1SILLICON, pevent, off, silicon_arya_buff, DATA_BUFF_SIZE, siliconarya_data);
+	silicon_arya_read_event(BHandle, BANK_NAME_U1SILLICON, pevent, off, silicon_arya_buff, DATA_BUFF_SIZE, siliconarya_data);
 #endif
 
 #ifdef USE_SILICON_ARYB
 	uint32_t *siliconaryb_data;
-	silicon_aryb_read_event(BHandle2, BANK_NAME_U2SILLICON, pevent, off, silicon_aryb_buff, DATA_BUFF_SIZE, siliconaryb_data);
+	silicon_aryb_read_event(BHandle, BANK_NAME_U2SILLICON, pevent, off, silicon_aryb_buff, DATA_BUFF_SIZE, siliconaryb_data);
 #endif
 
 	//BLT_block_comm(BHandle,wcount);
@@ -718,29 +689,29 @@ INT read_trigger_event(char *pevent, INT off) {
 	return bk_size(pevent);
 }
 
-INT read_silicon_event(char *pevent1, INT off) {  
+INT read_silicon_event(char *pevent, INT off) {  
 /*
 	int wcount;
-	//BLT_block_comm(BHandle2,wcount);
+	//BLT_block_comm(BHandle,wcount);
 	//BLT_block_comm(BHandle,wcount);
 
-	bk_init(pevent1);
+	bk_init(pevent);
 
 
 #ifdef USE_SILICON_ARYA
 	uint32_t *siliconarya_data;
-	silicon_arya_read_event(BHandle2, BANK_NAME_U1SILLICON, pevent1, off, silicon_arya_buff, DATA_BUFF_SIZE, siliconarya_data);
+	silicon_arya_read_event(BHandle, BANK_NAME_U1SILLICON, pevent, off, silicon_arya_buff, DATA_BUFF_SIZE, siliconarya_data);
 #endif
 
-	//BLT_block_comm(BHandle2,ucount);
+	//BLT_block_comm(BHandle,ucount);
 
 #ifdef USE_SILICON_ARYB
 	uint32_t *siliconaryb_data;
-	silicon_aryb_read_event(BHandle2, BANK_NAME_U2SILLICON, pevent1, off, silicon_aryb_buff, DATA_BUFF_SIZE, siliconaryb_data);
+	silicon_aryb_read_event(BHandle, BANK_NAME_U2SILLICON, pevent, off, silicon_aryb_buff, DATA_BUFF_SIZE, siliconaryb_data);
 #endif
 */
 
-	return bk_size(pevent1);
+	return bk_size(pevent);
 }
 
 

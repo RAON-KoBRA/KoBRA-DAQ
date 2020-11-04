@@ -35,16 +35,7 @@ int main(int argc, char** argv)
 	int eventid7;
 	int ary1_eventid;
 	int ary2_eventid;
-	//uint32_t ary1_scalerlower;
-	//uint32_t ary1_scalerupper;
-	//uint32_t ary2_scalerlower;
-	//uint32_t ary2_scalerupper;
-	//uint32_t bs_scalerlower;
-	//uint32_t bs_scalerupper;	
-	//uint32_t tdc1_scalerlower;
-	//uint32_t tdc1_scalerupper;
-	//uint32_t tdc2_scalerlower;
-	//uint32_t tdc2_scalerupper;
+
 
 	uint32_t v2495_1scalerlower;
 	uint32_t v2495_1scalerupper;
@@ -91,8 +82,7 @@ int main(int argc, char** argv)
 	fTree->Branch("channel1",channel1,"channel1[64]/I");
 	fTree->Branch("tdc_value1",tdc_value1,"tdc_value1[64]/I");
 	fTree->Branch("ch_fired1",&ch_fired1,"ch_fired1/I");
-	//fTree->Branch("tdc1_scalerlower",&tdc1_scalerlower,"tdc1_scalerlower/i");
-	//fTree->Branch("tdc1_scalerupper",&tdc1_scalerupper,"tdc1_scalerupper/i");
+
 
 	//--------------------TDC2--------------------//
 	fTree->Branch("eventid2",&eventid2,"eventid2/I");
@@ -100,16 +90,14 @@ int main(int argc, char** argv)
 	fTree->Branch("channel2",channel2,"channel2[64]/I");
 	fTree->Branch("tdc_value2",tdc_value2,"tdc_value2[64]/I");
 	fTree->Branch("ch_fired2",&ch_fired2,"ch_fired2/I");
-	//fTree->Branch("tdc2_scalerlower",&tdc2_scalerlower,"tdc2_scalerlower/i");
-	//fTree->Branch("tdc2_scalerupper",&tdc2_scalerupper,"tdc2_scalerupper/i");
+
 
 	//--------------------ADC1--------------------//
 	fTree->Branch("eventid3",&eventid3,"eventid3/I");
 	fTree->Branch("gCOUNTa3",&gCOUNTa3,"gCOUNTa3/i");
 	fTree->Branch("adc_value3",adc_value3,"adc_value3[1500]/I");
 	fTree->Branch("adc_channel3",adc_channel3,"adc_channel3[1500]/I");
-	//fTree->Branch("bs_scalerlower",&bs_scalerlower,"bs_scalerlower/i");
-	//fTree->Branch("bs_scalerupper",&bs_scalerupper,"bs_scalerupper/i");
+
 
 	//--------------------TDC3--------------------//
 	fTree->Branch("eventid7",&eventid7,"eventid7/I");
@@ -123,16 +111,14 @@ int main(int argc, char** argv)
 	fTree->Branch("gCOUNTar1",&gCOUNTar1,"gCOUNTar1/i");
 	fTree->Branch("ary1_channel",ary1_channel,"ary1_channel[1500]/I");
 	fTree->Branch("ary1_adc",ary1_adc,"ary1_adc[1500]/I");
-//	fTree->Branch("ary1_scalerlower",&ary1_scalerlower,"ary1_scalerlower/i");
-//	fTree->Branch("ary1_scalerupper",&ary1_scalerupper,"ary1_scalerupper/i");
+
 
 	//--------------------ary ADC2--------------------//
 	fTree->Branch("ary2_eventid",&ary2_eventid,"ary2_eventid/I");	
 	fTree->Branch("gCOUNTar2",&gCOUNTar2,"gCOUNTar2/i");
 	fTree->Branch("ary2_channel",ary2_channel,"ary2_channel[1500]/I");
 	fTree->Branch("ary2_adc",ary2_adc,"ary2_adc[1500]/I");
-//	fTree->Branch("ary2_scalerlower",&ary2_scalerlower,"ary2_scalerlower/i");
-//	fTree->Branch("ary2_scalerupper",&ary2_scalerupper,"ary2_scalerupper/i");
+
 
 	//---------------------FPGA-----------------------//
 	fTree->Branch("gCOUNTscaler",&gCOUNTscaler,"gCOUNTscaler/i");
@@ -176,7 +162,8 @@ int main(int argc, char** argv)
 	void *pdata6=0;
 
 	if(argc<2){printf("type run number!\n"); exit(-1);}
-	sprintf(path_file, "/home/kobradaq/online/data/run%s.mid.lz4", argv[argc-1]);
+	//sprintf(path_file, "/home/kobradaq/online/data/run%s.mid.lz4", argv[argc-1]);
+	sprintf(path_file, "run%s.mid.lz4", argv[argc-1]);
 	TMidasFile fp;
 
 	if(! fp.Open(path_file)){
@@ -253,7 +240,7 @@ while(1){
 
 		if(!fp.Read(&event)) break;
 		uint16_t eventID=event.GetEventId();
-	printf("Check eventID1....\n");
+	/*printf("Check eventID1....\n");
 	if(eventID ==1){
 			event.SetBankList();
 			if(event.FindBank(fBank4, &bankLength4, &bankType4, &pdata4))
@@ -483,9 +470,9 @@ while(1){
 			else{printf("Bank name7 %s is not listed\n", fBank7);}	
 		}
 
-
-	printf("Check eventID2....\n");
-	if(eventID ==2){
+*/
+	printf("Check eventID1....\n");
+	if(eventID ==1){
 			event.SetBankList();
 			if(event.FindBank(fBank5, &bankLength5, &bankType5, &pdata5))
 			{
@@ -514,7 +501,7 @@ while(1){
 						//ary1_scalerlower = data5[bankLength5-2];
 						//ary1_scalerupper = data5[bankLength5-1];
 						
-						printf("AADC1; event_count; GCOUNT; clock count: %d, %u\n",ary1_eventid,gCOUNTar1);
+						//printf("AADC1; event_count; GCOUNT; clock count: %d, %u\n",ary1_eventid,gCOUNTar1);
 						//printf("ary 1 event id = %d\n",ary1_eventid);
 						//printf("gCOUNTar1 = %d\n",gCOUNTar1);
 						//printf("ary 1 scaler lower = %u\n",ary1_scalerlower);
@@ -526,24 +513,29 @@ while(1){
 				//printf("======================================Skipped silicon event %d \n", skippedsil);
 				skippedsil++;
 				}
-				/*
+				
 				if(tmp_ary1_eventid!=ary1_eventid)//to skip dulicated event number
 				{
-					//fTree->Fill();
-					//tmp_ary1_eventid = ary1_eventid;
-					//printf("silicon event id === %d \n",ary1_eventid );
+					
+					fTree->Fill();
+					tmp_ary1_eventid = ary1_eventid;
+					printf("silicon event id === %d \n",ary1_eventid );
+
 				}
 				for (int i=0; i<36; i++)//reset
 				{
-					//ary1_channel[i] = -999;
-					//ary1_adc[i] = -999;
-				}*/
+					outfile2 << ary1_channel[i] << "\t" << ary1_adc[i] << "\t";
+					
+					
+					ary1_channel[i] = -999;
+					ary1_adc[i] = -999;
+				}
 			}
 			else{printf("Bank name5 %s is not listed\n", fBank5);}
 
 			if(event.FindBank(fBank6, &bankLength6, &bankType6, &pdata6))
 			{
-				printf("AADC2 entries======================================%i \n",bankLength6);
+				//printf("AADC2 entries======================================%i \n",bankLength6);
 				for(int i=0; i<bankLength6; i++)
 				{
 					data6[i]=((uint32_t*)pdata6)[i];	
@@ -567,7 +559,7 @@ while(1){
 						gCOUNTar2 = data6[bankLength6-1];
 						//ary2_scalerlower = data6[bankLength6-2];
 						//ary2_scalerupper = data6[bankLength6-1];
-						printf("AADC2; event_count; GCOUNT; clock count: %d, %u\n",ary2_eventid,gCOUNTar2);
+						//printf("AADC2; event_count; GCOUNT; clock count: %d, %u\n",ary2_eventid,gCOUNTar2);
 						//printf("ary 2 event id2 = %d\n",ary2_eventid);
 						//printf("gCOUNTar2 = %d\n",gCOUNTar2);
 						//printf("ary 2 scaler lower = %u\n",ary2_scalerlower);
@@ -591,45 +583,103 @@ while(1){
 					ary2_adc[i] = -999;
 				}*/
 			}
-			else{printf("Bank name6 %s is not listed\n", fBank6);}
+			else printf("Bank name6 %s is not listed\n", fBank6);
+
+			if(event.FindBank(fBank7, &bankLength7, &bankType7, &pdata7))
+			{
+				printf("F3TDC entries======================================%i \n",bankLength7);
+				for (int i=0; i<32; i++)//reset
+				{
+					tdc_value7[i] = -999;
+				}
+				for (int i=0; i<32; i++)
+				{
+				ch_du7[i] = 0;
+				}	
+				for(int i=0; i<bankLength7; i++)
+				{
+					data7[i]=((uint32_t*)pdata7)[i];	
+					if(i==0)
+					{
+						eventid7 = data7[0];
+						//printf("tdc1 evnt id === %d \n", data1[0]);
+					}					
+						//geo = data[1];
+						//ch_fired1 = data[bankLength1-1]-7;
+						//uint32_t time_tag = data[bankLength1-2];
+						//uint32_t global_time = data[bankLength1-1];
+					if (i>1&&i%2==0&&i<bankLength7-1)//find channel and tdc value
+					{
+						//printf("=== %d, %d \n", data1[i-3], data1[i-2]);
+						//channel1[(i-4)/2] = data1[i-3];
+  						//int tmp_ch = channel1[(i-4)/2];
+						//tdc_value1[tmp_ch] = data1[i]; 
+						//printf("=== %d, %d \n", data1[i-1], data1[i]);
+						channel7[(i-2)/2] = data7[i-1];
+						int tmp_ch;
+  						if(channel7[(i-2)/2]<33) {tmp_ch = channel7[(i-2)/2]; ch_du7[data7[i-1]]++;}//increase ch_du7 for every channel when the channel has event
+						if(ch_du7[data7[i-1]]>1)//printf("multi hit channel=== %d \n", data7[i-1]);
+						if(channel7[(i-2)/2]>33) tmp_ch = -999;
+						if(ch_du7[data7[i-1]]==1) {
+                                          	tdc_value7[tmp_ch] = data7[i];
+                                          	//outfile2 << tmp_ch << "\t" << data1[i] << "\t";
+					  	//printf("tdc 1 === %d, %d \n", tmp_ch, data1[i]);
+                                         	}
+					}
+					else if (i == bankLength7-1) 
+					{
+						gCOUNTt7 = data7[bankLength7-1];
+						//printf("F3TDC; event_count; GCOUNT; clock count: %d, %u\n",eventid7, gCOUNTt7);
+					}
+				}
+				
+				if(tmp_eventid7==eventid7)//check if event id is duplicated
+				{
+				//printf("======================================Skipped event1 %d \n", skipped1);
+				skipped1++;
+				}
+				//if(eventid1%100==0)printf("Events analyzed1 === %d \n", eventid1);
+				
+			}
+			else{printf("Bank name7 %s is not listed\n", fBank7);}	
+
+
+
 		}
-		if(tmp_eventid1!=eventid1&&tmp_eventid2!=eventid2&&tmp_eventid3!=eventid3&&tmp_ary1_eventid==ary1_eventid&&tmp_ary2_eventid==ary2_eventid)				
-		{
+		/*if( tmp_ary1_eventid==ary1_eventid && tmp_ary2_eventid==ary2_eventid){
 			fTree->Fill();
-			tmp_eventid1 = eventid1;
-			tmp_eventid2 = eventid2;
-			tmp_eventid3 = eventid3;
+
+			tmp_eventid7 = eventid7;
 			tmp_ary1_eventid = ary1_eventid;
 			tmp_ary2_eventid = ary2_eventid;
-			//printf("silicon event id === %d \n",eventid3 );
-				
-				//if(eventid3%100==0)printf("Events analyzed silicon === %d \n", eventid3);
+
 			for(int i=0; i<32; i++)
 			{
-                                outfile2 << tdc_value1[i] << "\t";
-				tdc_value1[i] = -999;
+                                outfile2 << tdc_value7[i] << "\t";
+				tdc_value7[i] = -999;
 			}
-			for(int i=0; i<16; i++)
-			{
-                                outfile2 << tdc_value2[i] << "\t";
-				tdc_value2[i] = -999;
-			}
+
 			for (int i=0; i<36; i++)//reset
 			{
-				adc_channel3[i] = -999;
-				adc_value3[i] = -999;
-			}
-			for (int i=0; i<36; i++)//reset
-			{
+
+				outfile2 << ary1_channel[i] << "\t";
+				outfile2 << ary1_adc[i] << "\t";
 				ary1_channel[i] = -999;
 				ary1_adc[i] = -999;
 			}
 			for (int i=0; i<36; i++)//reset
 			{
+
+				outfile2 << ary2_channel[i] << "\t";
+				outfile2 << ary2_adc[i] << "\t";
 				ary2_channel[i] = -999;
 				ary2_adc[i] = -999;
 			}
-		}
+			outfile2 << "\n";
+		}*/
+
+
+
 	}
 
 	printf("======================================TTotal skipped silicon event %d \n", skippedsil);

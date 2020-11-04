@@ -104,8 +104,16 @@ ROOTANA_INC = -I/home/kobradaq/packages/rootana/libMidasInterface
 #EQU_FLAG = -DUSE_PPAC_F3 #F1 trigger #F2  
 #EQU_FLAG = -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3
 #EQU_FLAG = -DUSE_SILICON_F3 #F3 silicon_trigger 
-#EQU_FLAG= -DUSE_PLASTIC_F3
-EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_V2495 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB
+#EQU_FLAG= -DUSE_PLASTIC_F3 -DUSE_PPAC_F3
+#EQU_FLAG= -DUSE_PPAC_F3 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB
+#EQU_FLAG=  -DUSE_PPAC_F3 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB
+EQU_FLAG= -DUSE_PPAC_F3 -DUSE_V2495 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB
+
+
+################ bf f3 test
+#EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_V2495 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB
+
+
 #EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_V2495
 #EQU_FLAG= -DUSE_PPAC_F3 -DUSE_SILICON_F3
 ##############################################################
@@ -114,8 +122,14 @@ EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_V2495
 #-------------------------------------------------------------------
 # List of analyzer modules
 #
-MODULES = f1_ppac_anal.o f1_plastic_anal.o f2_ppac_anal.o f3_silicon_anal.o f3_plastic_anal.o f3_ppac_anal.o
-MFE_MODULES = mfe_common.o mfe_f1_plastic.o mfe_f1_ppac.o mfe_f2_ppac.o mfe_f3_silicon.o mfe_f3_plastic.o mfe_f3_ppac.o mfe_v2495.o mfe_silicon_arya.o mfe_silicon_aryb.o
+#MODULES =  f3_ppac_anal.o silicon_arya_anal.o silicon_aryb_anal.o
+MODULES =  f3_ppac_anal.o silicon_arya_anal.o silicon_aryb_anal.o
+###########bf f3 test
+#MODULES = f1_ppac_anal.o f1_plastic_anal.o f2_ppac_anal.o f3_silicon_anal.o f3_plastic_anal.o f3_ppac_anal.o silicon_arya_anal.o silicon_aryb_anal.o
+#MFE_MODULES =  mfe_f3_ppac.o mfe_silicon_arya.o mfe_silicon_aryb.o 
+MFE_MODULES = mfe_common.o mfe_v2495.o mfe_f3_ppac.o  mfe_silicon_arya.o mfe_silicon_aryb.o 
+###########bf f3 test
+#MFE_MODULES = mfe_common.o mfe_f1_plastic.o mfe_f1_ppac.o mfe_f2_ppac.o mfe_f3_silicon.o mfe_f3_plastic.o mfe_f3_ppac.o mfe_v2495.o mfe_silicon_arya.o mfe_silicon_aryb.o
 
 #-------------------------------------------------------------------
 # Frontend code name defaulted to frontend in this example.
@@ -224,6 +238,12 @@ f3_plastic_anal.o: $(USR_SRC)/f3_plastic_anal.cxx
 	$(CXX) $(ROOTCFLAGS) $(CFLAGS) $(OSFLAGS) $(EQU_FLAG) -o $@ -c $<
 
 f3_ppac_anal.o: $(USR_SRC)/f3_ppac_anal.cxx 
+	$(CXX) $(ROOTCFLAGS) $(CFLAGS) $(OSFLAGS) $(EQU_FLAG) -o $@ -c $<
+
+silicon_arya_anal.o: $(USR_SRC)/silicon_arya_anal.cxx 
+	$(CXX) $(ROOTCFLAGS) $(CFLAGS) $(OSFLAGS) $(EQU_FLAG) -o $@ -c $<
+
+silicon_aryb_anal.o: $(USR_SRC)/silicon_aryb_anal.cxx 
 	$(CXX) $(ROOTCFLAGS) $(CFLAGS) $(OSFLAGS) $(EQU_FLAG) -o $@ -c $<
 
 $(UANA).o: $(USR_SRC)/$(UANA).cxx 

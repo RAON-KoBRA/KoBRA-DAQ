@@ -52,7 +52,7 @@ uint32_t Counters_tmp_udetectorb;
 
 int iiab ,iibb, iicb;
 
-INT silicon_aryb_init(int32_t BHandle, TRIGGER_SETTINGS_SILICONARY *ts)
+INT silicon_aryb_init(int32_t BHandle, TRIGGER_SETTINGS_BEAMLINE *ts)
 {
   u_detector_event_tmpb = 0;
   Counters_tmp_udetectorb = 0; 	
@@ -180,7 +180,7 @@ INT silicon_aryb_exit(int32_t BHandle)
 
 
 
-INT silicon_aryb_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SETTINGS_SILICONARY *ts)
+INT silicon_aryb_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SETTINGS_BEAMLINE *ts)
 {
 	/*
 	uint16_t reg_value, c_reg_value;
@@ -270,7 +270,7 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 	//printf("Arr approaching count loop########\n");
 	iiab = iibb = iicb = 0;
 
-
+	
 //        UINT32 tmp_channel = 999;
 	for(i=0; i<count/4; i++)
 	{
@@ -285,11 +285,11 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						UINT32 UV=CVT_V785_GET_DATUM_UN(data);
 						UINT32 OV=CVT_V785_GET_DATUM_OV(data);
 						if(channel == 1) {ch_check_b++;}
-						if(ch_check_b > 1) {printf("ADC over counting,, ch_check_b = %d\n",ch_check_b); break;}
+						//if(jjs3b%500 == 0) if(ch_check_b > 1) {printf("ADC over counting,, ch_check_b = %d\n",ch_check_b); break;}
 						*pdata++=channel;
 						*pdata++=measure;
 						//tmp_channel = channel;
-						//printf("(ARY B ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
+						if(channel > 15 && channel < 32)printf("(ARY B ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
 						//printf("external trigger from scaler(ary b u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary b u_detector); %u\n", clock_number_lower);
 						
@@ -305,7 +305,7 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						event_countb= CVT_QTP_GET_EOB_EVENT_COUNT(data);
 						*pdata++=event_countb;
 						*pdata++=GCOUNT;
-						printf("AADC2; event_count; GCOUNT; clock count:%u, %lu, %lu \n", event_countb, GCOUNT, TT100);
+						//if(jjs3b%500 == 0)printf("AADC2; event_count; GCOUNT; clock count:%u, %lu, %lu \n", event_countb, GCOUNT, TT100);
 						//printf("Processeed event reading(SB3 ADC): EOB event_count:%d\n", event_countb);
 						//printf("external trigger from scaler(ary b u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary b u_detector); %u\n", clock_number_lower);

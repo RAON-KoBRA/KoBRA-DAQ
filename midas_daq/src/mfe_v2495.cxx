@@ -89,7 +89,7 @@ uint32_t beamline_triggered;
 uint32_t u_detector_triggered;
 
 extern uint32_t silicon_ary_event;
-extern uint32_t f1ppac_event;
+ uint32_t f1ppac_event;
 uint64_t TimeTag;
 uint64_t TimeTag_tmp=0;
 INT v2495_init(int32_t BHandle2)
@@ -160,13 +160,13 @@ INT v2495_init(int32_t BHandle2)
 //	equipment[index].hkey_variables = hKey;
 
 
-                ret_2495 = CAEN_PLU_OpenDevice(CAEN_PLU_CONNECT_VME_V2718, vme_base_address, 0, 0, &BHandle2);
+               /* ret_2495 = CAEN_PLU_OpenDevice(CAEN_PLU_CONNECT_VME_V2718, vme_base_address, 0, 0, &BHandle2);
                 if (ret_2495 != CAEN_PLU_OK) {
                         printf("Error %d\n", ret_2495);
                         exit(0);
                 }
 
-        printf("Device connected\n");
+        printf("Device connected\n");*/
 
         ret_2495 = CAEN_PLU_GetSerialNumber(BHandle2, sn, 100);
         if (ret_2495 != CAEN_PLU_OK) {
@@ -195,7 +195,7 @@ INT v2495_init(int32_t BHandle2)
 		//PLUProgram(&des);
 	unsigned int channelenable;
 
-        channelenable = 15;
+        channelenable = 31;
         ret_2495 = CAEN_PLU_WriteReg(BHandle2, 0x1028, channelenable);
         printf("FW2495SC ch of D slot ch 1 enable %u\n", channelenable);
 
@@ -584,7 +584,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 				}
 			}
 
-	jj++;
+	
 	TT100 = Counters[64] + Counters64[64]*pow(2,32);
 	GCOUNT = Counters[67]; + Counters64[67]*pow(2,32);
 	Counters_recount1 = Counters[67]-Counters_tmp;
@@ -600,12 +600,13 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 
 				eq_scal=&beamline[0].scal;
-				eq_scal->total_events_sent = Counters[65];
-				eq_scal->total_events_per_sec = (double)Counters_recount;	// event rate for the Beamline trigger
-				eq_scal->livetime = (float)(f1ppac_event-f1ppac_event_tmp0)/(Counters[67]-Counters_tmp2); //
-				eq_scal->total_events_sent2 = TT100;
-				eq_scal->total_events_per_sec2 = Counters_recount2; // event rate for the Down Scaled,  Beamline trigger
-				eq_scal->livetime2 = (float)(silicon_ary_event-silicon_ary_event_tmp0)/(Counters[66]-Counters_tmp1);
+				eq_scal->total_events_sent = Counters[67]; // event rate for the Down Scaled Beamline trigger
+				eq_scal->total_events_per_sec = (double)Counters_recount;	
+				eq_scal->livetime = (float)(f1ppac_event-f1ppac_event_tmp0)/(Counters[67]-Counters_tmp2);
+
+				eq_scal->total_events_sent2 = TT100; // event rate for user detector
+				eq_scal->total_events_per_sec2 = Counters_recount2; 
+				eq_scal->livetime2 = (float)(silicon_ary_event-silicon_ary_event_tmp0)/(Counters[68]-Counters_tmp1);
 
 		}
 
@@ -617,7 +618,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 		*pdata++=Counters[66];			// Trigger[2] counting	(User trigger, IDK could be Scaled down one? it's depend)
 		*pdata++=Counters64[66];
 		*pdata++=GCOUNT;//Counters[67];			// Triger [i] counting . . . (Scaled BLine trigger)
-		printf("F2495;              GCOUNT:                 %lu \n", GCOUNT);
+		if(jj%500 == 0) printf("F2495;              GCOUNT:                 %lu \n", GCOUNT);
 	//	*pdata++=Counters64[67];
 
 		//##############################################################################
@@ -631,10 +632,10 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 
 			Counters_recount = (double)(Counters[65]-Counters_tmp)/sintv;
-			Counters_recount2 = (double)(Counters[67]-Counters_tmp2)/sintv;
+			Counters_recount2 = (double)(Counters[66]-Counters_tmp2)/sintv;
 
 			Counters_tmp = Counters[65];
-			Counters_tmp1 = Counters[66];
+			Counters_tmp1 = Counters[68];
 			Counters_tmp2 = Counters[67];
 			f1ppac_event_tmp0 = f1ppac_event;
 			silicon_ary_event_tmp0 = silicon_ary_event;
@@ -643,6 +644,8 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 			//TT100_tmp = TT100;
 			stick = ss_millitime();
 		}
+
+		jj++;
 
 	}
 
