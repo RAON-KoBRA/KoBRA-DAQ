@@ -544,7 +544,7 @@ INT frontend_loop() {
 INT poll_event(INT source, INT count, BOOL test) {
 
 	uint lam=0;
-	lam= silicon_arya_check_fifo(BHandle) || silicon_aryb_check_fifo(BHandle);
+	lam= silicon_arya_check_fifo(BHandle) || silicon_aryb_check_fifo(BHandlez);
 	//lam=silicon_ary_check_fifo(BHandle);
 	//lam=(f3_ppac_check_fifo(BHandle)||f1_ppac_check_fifo(BHandle));
         //lam=f3_silicon_check_fifo(BHandle);
