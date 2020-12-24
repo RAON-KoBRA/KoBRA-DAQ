@@ -19,7 +19,7 @@
 
 #define N_ADC_arya_silicon            32
 #define N_ADC_aryb_silicon            32
-
+#define N_FPGA_scaler		8
 
 /*-- Histo ID bases ------------------------------------------------*/
 

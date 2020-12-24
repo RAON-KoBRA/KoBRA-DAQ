@@ -32,6 +32,8 @@
 #include "mfe_TDC.h"
 #include "mfe_ADC.h"
 #include "mfe_common.h"
+#include "CAEN_PLU.h"
+#include "PLUscalerLib.h"
 
 static HNDLE hDB_obd;
 static TRIGGER_SETTINGS tr_set;
@@ -292,7 +294,7 @@ uint32_t *f3_plastic_buff=NULL;
 uint32_t *f3_ppac_buff=NULL;
 uint32_t *silicon_arya_buff=NULL;
 uint32_t *silicon_aryb_buff=NULL;
-
+uint32_t *v2495_buff=NULL;
 
 
 
@@ -310,7 +312,8 @@ INT frontend_init() {
 
 
   //VME initialization
-
+  v2495_init(BHandle); // v2495 intialization take v2718 together
+/*
         short Link=0;
   	short Device=0;
         CVBoardTypes VMEBoard = cvV2718;
@@ -323,11 +326,34 @@ INT frontend_init() {
   		return FE_ERR_HW;
   	}
   	printf("Done\n");
+*/
+//	unsigned int Rotaryswitch;
+
+	//CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x36), &Rotaryswitch);
+	//printf("1st Controller rotary switch:%i\n", Rotaryswitch);
+
+
+        short Link=0;
+  	short Device=1;
+        CVBoardTypes VMEBoard = cvV2718;
+
+        printf("\n1st V2718 initialization...");
+
+  	//Make sure V2718 opened OK!
+  	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle2)!=cvSuccess){
+  		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718_board1");
+  		return FE_ERR_HW;
+  	}
+  	printf("Done\n");
 
 	unsigned int Rotaryswitch;
 
 	CAENVME_ReadRegister(BHandle, static_cast<CVRegisters>(0x36), &Rotaryswitch);
 	printf("1st Controller rotary switch:%i\n", Rotaryswitch);
+
+	char str0[256];
+	char str00[128];
+
 
 #ifdef USE_PPAC_F1
   	f1_ppac_init(BHandle);
@@ -346,17 +372,10 @@ INT frontend_init() {
 #endif
 
 
-  	//hardware initialization
+  	//2nd controller initialization
   	printf("\n2nd V2718 initialization...");
 
-  	Link=0;
-  	Device=1;
-//	unsigned int Rotaryswitch;
-  	//Make sure V2718 opened OK!
-  	if(CAENVME_Init(VMEBoard, Link, Device, &BHandle2)!=cvSuccess){
-  		cm_msg(MERROR, "kobra_detector", "Failed to Open CAEN V2718_board2");
-  		return FE_ERR_HW;
-  	}
+
   	printf("Done\n");
 
 	CAENVME_ReadRegister(BHandle2, static_cast<CVRegisters>(0x36), &Rotaryswitch);
@@ -427,7 +446,10 @@ INT frontend_exit() {
 	free(silicon_aryb_buff);
 #endif
 
-
+#ifdef USE_V2495
+	v2495_exit(BHandle);
+	free(v2495_buff);
+#endif
 
 	return SUCCESS;
 }
@@ -473,7 +495,9 @@ INT begin_of_run(INT run_number, char *error) {
 	silicon_aryb_begin(BHandle2, run_number, error, &tr_set);
 #endif
 
-
+#ifdef USE_V2495
+	v2495_buff = static_cast<uint32_t*>( malloc(DATA_BUFF_SIZE));
+#endif
 
 
 
@@ -515,6 +539,20 @@ INT end_of_run(INT run_number, char *error) {
 	silicon_aryb_end(BHandle2, run_number, error);
 	free(silicon_aryb_buff);
 #endif
+
+  CAEN_PLU_ERROR_CODE ret_2495;
+
+                ret_2495 = CAEN_PLU_CloseDevice(BHandle);
+                if (ret_2495 != CAEN_PLU_OK) {
+                        printf("close Error %d\n", ret_2495);
+                        exit(0);
+                }
+
+
+	db_close_all_records ();
+
+  printf("PLU stopped OK\n");
+  free(v2495_buff);
 
   return SUCCESS;
 }
@@ -670,5 +708,11 @@ INT read_trigger_event(char *pevent, INT off) {
 	uint32_t *siliconaryb_data;
 	silicon_aryb_read_event(BHandle2, BANK_NAME_U2SILLICON, pevent, off, silicon_aryb_buff, DATA_BUFF_SIZE, siliconaryb_data);
 #endif
+
+#ifdef USE_V2495
+	uint32_t *v2495_data;
+	v2495_read_event(BHandle, BANK_NAME_SCALER, pevent, off, v2495_buff, DATA_BUFF_SIZE, v2495_data);
+#endif
+
 	return bk_size(pevent);
 }

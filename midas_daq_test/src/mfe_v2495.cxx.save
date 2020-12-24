@@ -25,7 +25,7 @@
 #include "strlcpy.h"
 #include "msystem.h"
 
-//#include "kobra.h"
+#include "kobra.h"
 
 
 //INT status;
@@ -72,11 +72,11 @@ HNDLE hKey,hKey1;
 
 //extern BEAMLINE bline[];
 
-//BEAMLINE_STATS *eq_scal;
+BEAMLINE_STATS *eq_scal;
 
 
 INT status = 0;
-//BEAMLINE *eqr;
+BEAMLINE *eqr;
 
 int icc = 0;
 uint64_t TT100,GCOUNT,GCOUNT_tmp;
@@ -231,11 +231,11 @@ unsigned int controlregisterbitclear;
 	sleep(1);
 
 //########################	Passive record of new odb tree	######################################
-/* //###############
-	      // open hot link to statistics tree 
+
+	      /* open hot link to statistics tree */
     status = db_open_record(hDb, hKey, eq_scal, sizeof(BEAMLINE_STATS), MODE_WRITE, NULL, NULL);
       if (status == DB_NO_ACCESS) {
-         // record is probably still in exclusive access by dead FE, so reset it 
+         /* record is probably still in exclusive access by dead FE, so reset it */
         status = db_set_mode(hDb, hKey, MODE_READ | MODE_WRITE | MODE_DELETE, TRUE);
          if (status != DB_SUCCESS)
             cm_msg(MERROR, "register_equipment", "Cannot change access mode for record \'%s\', error %d", str, status);
@@ -248,7 +248,7 @@ unsigned int controlregisterbitclear;
          ss_sleep(3000);
       }
 
-*/ //#############
+
 //########################################################################################################
 
 
@@ -500,12 +500,12 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
  	 	char       sn1[100];
  	 	char *vme_base_address2 = "32100000";
-
+######## */
 		// empty the FIFO in the main FPGA
-			CAEN_PLU_WriteReg(BHandle, MAIN_SOFT_RESET,0x1);	
-		// Reset the board 
+	/*		CAEN_PLU_WriteReg(BHandle, MAIN_SOFT_RESET,0x1);
+		/* Reset the board */
 	//	CAEN_PLU_WriteReg(BHandle, PLUSCALER_SHOT, PLUSCALER_SHOT_RESET);
-		// program the scaler 
+		/* program the scaler */
 
 		si1 = 0;
 		kx = db_set_value(hDB, 0, "/Custom/Scaler/logi1", &si1, sizeof(si1), 1, TID_INT);
@@ -522,7 +522,6 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 		Counters_recount = 0;
 
 	}
-	*/	// ##############
 
 	//##########################################################################################################################################
 
@@ -592,7 +591,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 	jj++;
 	TT100 = Counters[64] + Counters64[64]*pow(2,32);
-	GCOUNT = Counters[67] + Counters64[67]*pow(2,32);
+	GCOUNT = Counters[67]; + Counters64[67]*pow(2,32);
 	Counters_recount1 = Counters[67]-Counters_tmp;
 
 	beamline_triggered = Counters[65];
@@ -602,7 +601,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 		// ################# Record Scaler values on  custom ODB ####################
 
-		/* if(jj%2 == 0){	// #########
+		if(jj%2 == 0){
 
 
 				eq_scal=&beamline[0].scal;
@@ -613,19 +612,15 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 				eq_scal->total_events_per_sec2 = Counters_recount2; // event rate for the Down Scaled,  Beamline trigger
 				eq_scal->livetime2 = (float)(silicon_ary_event-silicon_ary_event_tmp0)/(Counters[66]-Counters_tmp1);
 
-		}*/ // ##########
+		}
 
 
 		*pdata++=Counters[64];			// 100 MHZ pulse source timetag
 		*pdata++=Counters64[64];
-		*pdata++=Counters[65];			// Trigger[1] counting	(Raw BLine trigger)
-		*pdata++=Counters64[65];
-		*pdata++=Counters[66];			// Trigger[2] counting	(User trigger, IDK could be Scaled down one? it's depend)
-		*pdata++=Counters64[66];
-		*pdata++=Counters[67];			// Trigger[1] scaled
-		*pdata++=Counters64[67];
-		*pdata++=Counters[68];			// Trigger[2] scaled
-		*pdata++=Counters64[68];
+	//	*pdata++=Counters[65];			// Trigger[1] counting	(Raw BLine trigger)
+	//	*pdata++=Counters64[65];
+	//	*pdata++=Counters[66];			// Trigger[2] counting	(User trigger, IDK could be Scaled down one? it's depend)
+	//	*pdata++=Counters64[66];
 	//	*pdata++=GCOUNT;//Counters[67];			// Triger [i] counting . . . (Scaled BLine trigger)
 	//	printf("F2495;              GCOUNT:                 %lu \n", GCOUNT);
 	//	*pdata++=Counters64[67];

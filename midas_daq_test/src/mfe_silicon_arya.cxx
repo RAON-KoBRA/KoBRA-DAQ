@@ -56,7 +56,7 @@ CVErrorCodes ret_ary;
 
 //extern uint64_t TimeTag;
 //uint64_t TimeTag_ary_tmp;
-//extern uint64_t GCOUNT;
+extern uint64_t GCOUNT;
 
 uint32_t u_detector_event_tmp;
 uint32_t Counters_tmp_udetector;
@@ -411,8 +411,9 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 					{
 						event_count= CVT_QTP_GET_EOB_EVENT_COUNT(data);
 						user_channel_a = CVT_QTP_GET_HDR_CH_COUNT(data);
+						*pdata++=GCOUNT;
 						*pdata++=event_count;
-						//*pdata++=GCOUNT;
+						
 
 						//tok = ss_millitime();		// custom space def	
 			

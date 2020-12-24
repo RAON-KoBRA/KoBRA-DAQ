@@ -24,6 +24,7 @@ static cvt_V1190_data F1_PPAC_type;
 
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
+uint32_t f1ppac_event;
 
 extern "C"{
 

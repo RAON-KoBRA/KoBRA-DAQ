@@ -105,7 +105,7 @@ ROOTANA_INC = -I/home/kobradaq/packages/rootana/libMidasInterface
 #EQU_FLAG = -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3
 #EQU_FLAG = -DUSE_SILICON_F3 #F3 silicon_trigger 
 #EQU_FLAG= -DUSE_PLASTIC_F3
-EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB #-DUSE_V2495
+EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_SILICON_ARYA -DUSE_SILICON_ARYB -DUSE_V2495
 #EQU_FLAG= -DUSE_PPAC_F3 -DUSE_SILICON_F3
 ##############################################################
 
@@ -114,7 +114,7 @@ EQU_FLAG= -DUSE_PPAC_F1 -DUSE_PPAC_F2 -DUSE_PPAC_F3 -DUSE_SILICON_F3 -DUSE_SILIC
 # List of analyzer modules
 #
 MODULES = f1_ppac_anal.o  f2_ppac_anal.o f3_silicon_anal.o  f3_ppac_anal.o silicon_arya_anal.o silicon_aryb_anal.o
-MFE_MODULES = mfe_common.o  mfe_f1_ppac.o mfe_f2_ppac.o mfe_f3_silicon.o  mfe_f3_ppac.o mfe_silicon_arya.o mfe_silicon_aryb.o #mfe_v2495.o
+MFE_MODULES = mfe_common.o  mfe_f1_ppac.o mfe_f2_ppac.o mfe_f3_silicon.o  mfe_f3_ppac.o mfe_silicon_arya.o mfe_silicon_aryb.o mfe_v2495.o
 
 #-------------------------------------------------------------------
 # Frontend code name defaulted to frontend in this example.
@@ -140,7 +140,7 @@ CXX = g++ -std=c++11
 CFLAGS += -I$(INC_DIR) -I$(USR_INC) -I/usr/include -I /home/kobradaq/packages/rootana/include -I/home/kobradaq/packages/midas/include
 LDFLAGS += -L$(ROOTANASYS)/lib/librootana.a -L/home/kobradaq/packages/rootana/lib -lrootana
 COPTS	=	-fPIC -DLINUX -Wall 
-DEPLIBS = -lCAENVME -lcurses -lCAENV1x90SDK -lCAENqtpSDK
+DEPLIBS = -lCAENVME -lcurses -lCAENV1x90SDK -lCAENqtpSDK -lCAEN_PLU
 
 
 #TEST:=
@@ -173,11 +173,12 @@ mfe_f3_plastic.o: $(USR_SRC)/mfe_f3_plastic.cxx
 mfe_f3_ppac.o: $(USR_SRC)/mfe_f3_ppac.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_PPAC_F3 $(OSFLAGS) -o $@ -c $<
 
-#mfe_v2495.o: $(USR_SRC)/mfe_v2495.cxx
-#		$(CXX) $(COPTS) $(CFLAGS) -DUSE_V2495 $(OSFLAGS) -o $@ -c$<
+mfe_v2495.o: $(USR_SRC)/mfe_v2495.cxx
+		$(CXX) $(COPTS) $(CFLAGS) -DUSE_V2495 $(OSFLAGS) -o $@ -c $<
 
 mfe_silicon_arya.o: $(USR_SRC)/mfe_silicon_arya.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_SILICON_ARYA $(OSFLAGS) -o $@ -c $<
+
 
 mfe_silicon_aryb.o: $(USR_SRC)/mfe_silicon_aryb.cxx
 		$(CXX) $(COPTS) $(CFLAGS) -DUSE_SILICON_ARYB $(OSFLAGS) -o $@ -c $<

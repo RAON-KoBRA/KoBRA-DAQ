@@ -17,7 +17,8 @@
 #define F3_PPAC_ADDR  0x00EE// 0x0009
 #define F3_PLASTIC_ADDR 0x0005
 #define F3_SILICON_ADDR 0x000E //0x000E
-//#define SCALER_ADDR 0x3210
+
+#define SCALER_ADDR 0x3210
 
 //silicon arry
 #define SILICON_ARYA_ADDR 0x000A //0x000A

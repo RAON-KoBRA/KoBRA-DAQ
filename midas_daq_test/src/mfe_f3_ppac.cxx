@@ -23,6 +23,7 @@ static cvt_V1190_data F3_PPAC_type;
 
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
+extern uint64_t GCOUNT;
 
 UINT32 f3_pp_f_time;
 UINT64 f3_pp_time_tag;
@@ -212,6 +213,7 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
 					*pdata++=channel;
 					*pdata++=measure;
+					
 					printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 
@@ -225,6 +227,7 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 global_time=time_stamp1;
 					f3_pp_time_tag=time_stamp2;
 				#endif
+					*pdata++=GCOUNT;
 					*pdata++=f3_pp_time_tag;
 					*pdata++=global_time;
 					//printf("F3PPAC_Global_time_tag:%d, u_time:%11f\n", global_time, (f3_pp_time_tag|global_time)*800e-9);

@@ -140,6 +140,9 @@ BANK_LIST ana_trigger_bank_list[] = {
   {BANK_NAME_U2SILLICON, TID_DWORD, N_ADC_aryb_silicon, NULL},
 #endif
 
+#ifdef USE_V2495
+	{ BANK_NAME_SCALER, TID_DWORD, N_FPGA_scaler, NULL},
+#endif
 
   {""},
 

@@ -118,7 +118,7 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
    int32_t event_count;
    int32_t channel;
    int32_t tdc_value[N_TDC_f3_ppac];
-   uint64_t global_time_stamp;
+   uint64_t global_time_stamp,gcount1;
 
    memset(tdc_value, 0, sizeof(int32_t)*N_TDC_f3_ppac);
 
@@ -127,14 +127,16 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
 //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
    for(int i=0; i<1; i++){event_count = *pdata++;}
 
-   for (int i=0; i<bk_size-3; )
+   for (int i=0; i<bk_size-4; )
    {
 	   channel=*pdata++; i++;
 	   tdc_value[channel]=*pdata++; i++;
+	  
    }
 
-   for(int i=0; i<2; )
+   for(int i=0; i<3; )
    {
+	 gcount1=*pdata++; i++;
 	   uint32_t time2=*pdata++; i++;
 	   uint32_t time1=*pdata++; i++;
 	   global_time_stamp=time2|time1;
@@ -172,7 +174,7 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
    int32_t channels_arya;
    int32_t ev_tag1, ev_tag2;
    int32_t ADC_arya_value[N_ADC_arya_silicon];
-   
+   uint64_t gcount2;
 
 //   memset(tdc_value, 0, sizeof(int32_t)*16);
    memset(ADC_arya_value, 0, sizeof(int32_t)*N_ADC_arya_silicon);
@@ -181,7 +183,7 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
 
    if(first_Call_chks_arya)
    {
-	   for(int i=0; i<bk_size_a; i++){dumps_arya=*pdata++;}
+	   for(int i=0; i<bk_size_a; i++){dumps_arya=*pdata++;  }
 	   first_Call_chks_arya=0;
    }
    if(! first_Call_chks_arya){
@@ -192,14 +194,16 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
 			ADC_arya_value[channels_arya]=*pdata++; i++;
 			//printf("ary a channel:%d, ADC value:%d\n", channels_arya, ADC_arya_value[channels_arya]);
 		}
-		/*else{
-				ev_tag1 = *pdata++; i++;
-				ev_tag2 = *pdata++; i++;
-
-		}*/
-
+		
+		//else{
+		//		ev_tag1 = *pdata++; i++;
+		//		ev_tag2 = *pdata++; i++;
+			
+		//}
+			//gcount2=*pdata++; i++;
 		   
 	   }
+
    }
 
 bool logic = 0;

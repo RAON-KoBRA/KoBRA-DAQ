@@ -74,3 +74,10 @@ INT f3_plastic_read_fifo(int32_t BHandle, void *buff_tmp, int size);
 INT f3_plastic_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int size, uint32_t *pdata);
 INT f3_plastic_process_event(uint32_t *ev_buff, int size, EVENT_DATA_PPAC *ev);
 
+//========== Additonal electronics: V2495 FPGA Scaler readout function (Beaware,it's not an TDC!!)
+INT v2495_init(int32_t BHandle);
+INT v2495_exit(int32_t Bhandle);
+INT v2495_check_fifo(int32_t BHandle);
+INT v249t_read_fifo(int32_t BHandle, void *buff_tmp, int size);
+INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata);
+
