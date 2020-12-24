@@ -390,6 +390,14 @@ INT frontend_init() {
 #endif
 
 
+//#######
+//	Creat Link for the KOBRA DAQ STATUS PAGE
+ 	sprintf(str00,"/home/kobradaq/%s","online/midas_daq_test/custom/custom.html");
+	sprintf(str0, "/Custom/%s", "KoBRA Beamline Status&");
+
+	db_set_value(1, 0, str0, str00, 128, 1, TID_STRING);
+
+//###### FINAL LINK
 
 
 	printf("\n==========  Enjoy!\n");

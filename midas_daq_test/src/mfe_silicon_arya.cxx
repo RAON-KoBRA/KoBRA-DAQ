@@ -24,23 +24,23 @@ extern "C"{
 #include "mfe_ADC.h"
 #include "odb_trigger.h"
 #include "detector_conf.h"
-//#include "kobra_user.h"
+#include "kobra_user.h"
 #include "msystem.h"
 
 
 
-//BEAMLINE_STATS *eq_user;
+USER_STATS *eq_user; //BEAMLINE_STATS *eq_user;
 INT statusa = 0;
-//BEAMLINE *eqa;
+USER_DETECTOR *eqa; //BEAMLINE *eqa;
 
 HNDLE hDba = 1;
 HNDLE hKeya;
 
-//DWORD tick, tok;
+DWORD tick, tok;
 
 char stra[256];
 
-//extern uint32_t user_channel_b;
+extern uint32_t user_channel_b;
 uint32_t user_channel_a;
 uint32_t mcst_reg_order;
 uint32_t silicon_ary_event;
@@ -52,10 +52,10 @@ CVErrorCodes ret_ary;
 
 //extern uint64_t TT100;
 //extern uint32_t beamline_triggered;
-//extern uint32_t u_detector_triggered;
+extern uint32_t u_detector_triggered;
 
-//extern uint64_t TimeTag;
-//uint64_t TimeTag_ary_tmp;
+extern uint64_t TimeTag;
+uint64_t TimeTag_ary_tmp;
 extern uint64_t GCOUNT;
 
 uint32_t u_detector_event_tmp;
@@ -69,14 +69,14 @@ uint32_t event_count_tmp;
 
 INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
 {
-/*
-	sprintf(stra, "/Custom/%s",detector[0].name);
+//#####
+	sprintf(stra, "/Custom/%s",detector[0].name2);
 
 	db_create_key(hDba, 0, stra, TID_KEY);
 	db_find_key(hDba,0, stra, &hKeya);
 
 
-	     statusa = db_check_record(hDba, 0, stra, EQUIPMENT_SCAL_STR, TRUE);
+	     statusa = db_check_record(hDba, 0, stra, EQUIPMENT_SCAL_STR2, TRUE);
 	      if (statusa != DB_SUCCESS) {
 	         printf("Cannot create/check statistics record \'%s\', error %d\n", stra, statusa);
 	         ss_sleep(500);
@@ -95,10 +95,10 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
 		eq_user->events = 0;
 		eq_user->events_per_sec = 0;
 		eq_user->data_per_sec = 0;
-*/	// custome space def
- // u_detector_event_tmp = 0;
+	// ###### custome space def
+  u_detector_event_tmp = 0;
   Counters_tmp_udetector = 0;
-//  TimeTag_ary_tmp = 0;
+  TimeTag_ary_tmp = 0;
 
   UINT16 firmware_rev, reg_value, c_reg_value, geo_add, mcst_reg, msct_reg_order, status_reg, boardversion_reg, Bit_set_1_reg; 
   UINT16 interrupt_level,interrupt_vector,evt_tri, evt_tri_write, interrupt_level_write;
@@ -239,8 +239,8 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
 
 //########################	Passive record of new odb tree	######################################
 
-/*
-    statusa = db_open_record(hDba, hKeya, eq_user, sizeof(BEAMLINE_STATS), MODE_WRITE, NULL, NULL);
+ //##################
+    statusa = db_open_record(hDba, hKeya, eq_user, sizeof(USER_STATS), MODE_WRITE, NULL, NULL);
       if (statusa == DB_NO_ACCESS) {
 
         statusa = db_set_mode(hDba, hKeya, MODE_READ | MODE_WRITE | MODE_DELETE, TRUE);
@@ -248,13 +248,13 @@ INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
             cm_msg(MERROR, "register_equipment", "Cannot change access mode for record \'%s\', error %d", stra, statusa);
          else
             cm_msg(MINFO, "register_equipment", "Recovered access mode for record \'%s\'", stra);
-         statusa = db_open_record(hDba, hKeya, eq_user, sizeof(BEAMLINE_STATS), MODE_WRITE, NULL, NULL);
+         statusa = db_open_record(hDba, hKeya, eq_user, sizeof(USER_STATS), MODE_WRITE, NULL, NULL);
       }
       if (statusa != DB_SUCCESS) {
          cm_msg(MERROR, "register_equipment", "Cannot open statistics record, error %d. Probably other FE is using it", statusa);
          ss_sleep(3000);
       }
-*/
+	//##############
 //#######################################################################################################
 
 
@@ -268,11 +268,11 @@ INT silicon_arya_exit(int32_t BHandle)
 {
 	silicon_arya_clear_buffer(BHandle);
 	cvt_V792_close(&SILICON_arya_type);
-/*
+//####
 	eq_user->events_per_sec = 0;
 	eq_user->data_per_sec = 0;
 	eq_user->events = 0;
-*/					// custom space def
+					// #### custom space def
 	return SUCCESS;
 }
 
@@ -281,7 +281,7 @@ INT silicon_arya_exit(int32_t BHandle)
 INT silicon_arya_begin(int32_t BHandle, INT run_number, char *error, TRIGGER_SETTINGS *ts)
 {
 
-	//tick = ss_millitime(); 	custom space def
+	tick = ss_millitime(); 	//custom space def
 
 	/*
 	uint16_t reg_value, c_reg_value;
@@ -353,7 +353,7 @@ INT silicon_arya_read_async(int32_t BHandle, void *buff_tmp, int size)
 
 
 
-//uint32_t u_detector_triggered_tmp;
+uint32_t u_detector_triggered_tmp;
 uint32_t ch_check;
 INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT off, uint32_t *buff, int buff_size, uint32_t *pdata)
 {
@@ -415,9 +415,10 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						*pdata++=event_count;
 						
 
-						//tok = ss_millitime();		// custom space def	
+						tok = ss_millitime();		// custom space def	
 			
-						/*eq_user = &detector[0].dstat;
+							// ################
+						eq_user = &detector[0].dstat;
 						eq_user->events = event_count;
 
 						silicon_ary_event = event_count;
@@ -436,7 +437,7 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 							event_count_tmp = event_count;		
 							tick = ss_millitime();
 
-						}*/	// custom space def
+						}	// ############## custom space def
 
 
 
@@ -466,19 +467,21 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 	printf("external clock_number_lower from scaler(u_detector); %u\n", clock_number_lower);
 	printf("TimeTag:%u ,TimeTag_ary_tmp:%u\n",TimeTag,TimeTag_ary_tmp);
 	}*/
-	//float livelive; 			// custom space def
-	//livelive = (float)(event_count-u_detector_event_tmp)/(float)(u_detector_triggered-Counters_tmp_udetector);	//custom space def
+	float livelive; 			// #### custom space def
+	livelive = (float)(event_count-u_detector_event_tmp)/(float)(u_detector_triggered-Counters_tmp_udetector);	// #### custom space def
 
 //	printf("Live time(beamline): %u / %u\n", f1ppac_event-f1ppac_event_tmp,beamline_triggered-Counters_tmp_ppac);
 //	if( (u_detector_triggered-Counters_tmp_udetector) !=0 && u_detector_triggered>u_detector_triggered_tmp)printf("Live time(u_detector): %u \ %u \n",event_count-u_detector_event_tmp,  u_detector_triggered-Counters_tmp_udetector);
 
 	//if( (u_detector_triggered-Counters_tmp_udetector) !=0 && u_detector_triggered>u_detector_triggered_tmp)printf("Live time(u_detector): %f\n",livelive);
-	/*if(TimeTag > TimeTag_ary_tmp+1000000){//reset per 1 sec.
+	//	#######
+	if(TimeTag > TimeTag_ary_tmp+1000000){//reset per 1 sec.
 //		jj_tmp = 0;
 		//Counters_tmp_udetector = u_detector_triggered;
 		u_detector_event_tmp = event_count;
 		TimeTag_ary_tmp = TimeTag;
-		}	*/	// custom space def
+		}	
+			// ##### custom space def
 	//u_detector_triggered_tmp = u_detector_triggered;
 	bk_close(pevent, pdata);
 

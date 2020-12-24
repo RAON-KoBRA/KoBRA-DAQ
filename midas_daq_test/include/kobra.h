@@ -65,5 +65,25 @@ typedef struct bline {
 } BEAMLINE;
 
 
+BEAMLINE beamline[] = {
+  {"Trigger1 (Beamline)",            /* equipment name */
+   {1, 0,                   /* event ID, trigger mask */
+    "SYSTEM",               /* event buffer */
+    EQ_PERIODIC,
+    0,                       /* event source crate 0, all stations */
+    "MIDAS",                /* format */
+    TRUE,                   /* enabled */
+    RO_RUNNING |
+    RO_ODB,             /* read only when running */
+    2000,
+    0,                      /* stop run after this event limit */
+    0,                      /* number of sub events */
+    0,                      /* don't log history */
+    "", "", "",},
+        0,      /* readout routine */
+  },
+};
+
+
 #endif
 
