@@ -36,6 +36,8 @@ UINT64 f1_pp_time_tag;
 INT f1_ppac_init(int32_t BHandle)
 {
 
+	f1ppac_event = 0;
+
 	int32_t addr;
 	//Make sure V1270N opened OK!
 	printf("\n===================== Initializing F1 PPAC TDC...");
@@ -205,8 +207,8 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 				{
 					UINT32 event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
+					f1ppac_event = event_count;
 					*pdata++=event_count;
-					//printf("f1_Global_header; event_count:%d\n", event_count);
 				} break;
 
 			case CVT_V1190_TDC_MEASURE:
@@ -230,7 +232,6 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 				#endif
 					*pdata++=f1_pp_time_tag;
 					*pdata++=global_time;
-					//printf("f1_Global_time_tag:%d, u_time:%11f\n", global_time, (f1_pp_time_tag|global_time)*800e-9);
 				} break;
 
 			default:

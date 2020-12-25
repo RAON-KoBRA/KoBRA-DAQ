@@ -228,7 +228,7 @@ INT interrupt_configure(INT cmd, INT source, POINTER_T adr);
 
 
 EQUIPMENT equipment[] = {
-  {"KOBRA_Beamline_Detectors",            /* equipment name */
+  {"Trigger1 (Beamline)",            /* equipment name */
    {1, 0,                   /* event ID, trigger mask */
     "SYSTEM",               /* event buffer */
     EQ_POLLED,
@@ -629,9 +629,9 @@ INT poll_event(INT source, INT count, BOOL test) {
 	lam=f3_silicon_check_fifo(BHandle2);
 	#endif
 */
-        #ifdef USE_PPAC_F3
-	lam=f3_ppac_check_fifo(BHandle);
-	#endif
+    //    #ifdef USE_PPAC_F3
+	lam=f3_ppac_check_fifo(BHandle) || silicon_arya_check_fifo(BHandle2);
+//	#endif
 /*        
         #ifdef USE_PPAC_F1
 	lam=f1_ppac_check_fifo(BHandle);

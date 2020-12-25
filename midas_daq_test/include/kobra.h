@@ -26,6 +26,7 @@ typedef struct {
    double total_events_sent2;
    double total_events_per_sec2;
    double livetime2;
+   double livetime3;
 } BEAMLINE_STATS;
 
 
@@ -38,6 +39,7 @@ Livetime = DOUBLE : 0\n\
 2Total Events sent = DOUBLE : 0\n\
 2Total Events per sec. = DOUBLE : 0\n\
 2Livetime = DOUBLE : 0\n\
+3Livetime = DOUBLE : 0\n\
 "
 
 typedef struct bline {

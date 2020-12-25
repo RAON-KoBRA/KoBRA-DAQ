@@ -59,7 +59,7 @@
 		</table>
 	</div>
 -->
-        <div style="position:relative; height:100px;width:100px; margin: 50px 0px 0px 1400px; ">
+        <div style="position:relative; height:100px;width:100px; margin: 50px 0px 0px 700px; ">
 
                <img src="kobra_logo.png" alt="background image" width="260" height="85"> 
 
@@ -225,7 +225,7 @@
       }
    }
 
-   function callback(rpc, alarm, loggerBool, lastMessage, equipmentNames, equipmentStatData, equipmentCommonData, BlineStatData, DStatData) {
+   function callback(rpc, alarm, loggerBool, lastMessage, equipmentNames, equipmentStatData, equipmentCommonData, BlineStatData, DStatData, BonlyStatData) {
 
 
       // define all json data here
@@ -534,13 +534,15 @@
                   style_display = "table-row";
 
 	var total_events=[0,0];
-	//var user_events; 
-	//var user_rate; 
-	//var user_transfer;
 
 	var user_events = DStatData[0]["events sent"];
 	var user_rate = DStatData[0]["events per sec."];
 	var user_transfer =DStatData[0]["data per sec."];
+
+        var bonly_events = BonlyStatData[0]["events sent"];
+        var bonly_rate = BonlyStatData[0]["events per sec."];
+        var bonly_transfer = BonlyStatData[0]["data per sec."];
+
 
 	total_events[0] = BlineStatData[0]["total events sent"];
                if (BlineStatData[0]["total events sent"] > 1E9) {
@@ -557,10 +559,12 @@
                }*/
 
 
-		var ltime=[0,0];
+		var ltime=[0,0,0];
 
 		ltime[0]=BlineStatData[0]["livetime"];
 		ltime[1]=BlineStatData[0]["2livetime"];
+		ltime[2]=BlineStatData[0]["3livetime"];
+
 
 
 
@@ -611,16 +615,16 @@
                   "</a></td>" +
                   statusItem.outerHTML +
                   "<td align=\"center\">" +
-                  user_events +
+                  bonly_events +
                   "</td>" +
                   "<td align=\"center\">" +
-                  user_rate.toFixed(1) +
+                  bonly_rate.toFixed(1) +
                   "</td>" +
                   "<td align=\"center\">" +
-                  user_transfer.toFixed(3) +
+                  bonly_transfer.toFixed(3) +
                   "</td>"+
                   "<td align=\"center\">" +
-                  ltime[1].toFixed(2) +
+                  ltime[2].toFixed(2) +
                   "</td>" 
 
 		var httv = "<td align=\"center\"><a href=\"?cmd=eqtable&amp;eq=" +
@@ -966,7 +970,7 @@
       }
 
 
-var detectorstatdata = ["Custom/Trigger2 (Detector)"];
+//var detectorstatdata = ["Custom/Trigger2 (Detector)"];
       
 
       // Make the main JSON-RPC request
@@ -980,11 +984,12 @@ var detectorstatdata = ["Custom/Trigger2 (Detector)"];
          mjsonrpc_make_request("db_ls", {"paths": ["equipment"]}),
 	 mjsonrpc_make_request("db_get_values", {"paths": beamlinestatdata}),
 	 mjsonrpc_make_request("db_get_values", {"paths": ["/Custom/Trigger2 (Detector)"]}),
+         mjsonrpc_make_request("db_get_values", {"paths": ["/Custom/Trigger3 (Beamline only)"]}),
       ]).then(function (rpc) {
 
          // update the webpage
          callback(rpc[0]["result"], rpc[1]["result"], rpc[2]["result"], rpc[3]["result"], statusGlobalSpace.cachedEquipmentList, 
-                  rpc[4]["result"]["data"], rpc[5]["result"]["data"],rpc[7]["result"]["data"],rpc[8]["result"]["data"]);
+                  rpc[4]["result"]["data"], rpc[5]["result"]["data"], rpc[7]["result"]["data"], rpc[8]["result"]["data"], rpc[9]["result"]["data"]);
 
          // cache the results of the "db_ls /Equipment" RPC for the next RPC
          if(rpc[6]["result"]["data"][0] != null){

@@ -18,6 +18,7 @@
 #include "midas.h"
 #include "odb_trigger.h"
 #include "detector_conf.h"
+#include "kobra_bline.h"
 
 static cvt_V1190_data F3_PPAC_type;
 
@@ -25,12 +26,60 @@ extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
 extern uint64_t GCOUNT;
 
+float erate_p, drate_p, intv_p, ediff_p;
+uint32_t p_event_count_tmp;
+uint32_t f3ppac_event;//, f3ppac_event_tmp;
+
+uint32_t uchannel, uchannel_tmp;
 UINT32 f3_pp_f_time;
 UINT64 f3_pp_time_tag;
+
+BEAMLINE_STATS_ONLY *eq_bline;
+INT statusp = 0;
+BEAMLINEONLY *eqp;
+
+HNDLE hDbp = 1;
+HNDLE hKeyp;
+
+DWORD tick_p, tok_p;
+
+char strp[256];
 
 
 INT f3_ppac_init(int32_t BHandle)
 {
+	//######################	BLINE MONITOR	#########################
+
+        sprintf(strp, "/Custom/%s",beamlineonly[0].name3);
+
+        db_create_key(hDbp, 0, strp, TID_KEY);
+        db_find_key(hDbp,0, strp, &hKeyp);
+
+
+             statusp = db_check_record(hDbp, 0, strp, EQUIPMENT_SCAL_STR3, TRUE);
+              if (statusp != DB_SUCCESS) {
+                 printf("Cannot create/check statistics record \'%s\', error %d\n", strp, statusp);
+                 ss_sleep(500);
+              }
+
+              statusp = db_find_key(hDbp, 0, strp, &hKeyp);
+              if (statusp != DB_SUCCESS) {
+                 printf("Cannot find statistics record \'%s\', error %d\n", strp, statusp);
+                 ss_sleep(500);
+              }
+
+                statusp = 0;
+                eqp = NULL;
+
+                eq_bline = &beamlineonly[0].scal3;
+                eq_bline->events = 0;
+                eq_bline->events_per_sec = 0;
+                eq_bline->data_per_sec = 0;
+
+
+	//#########################################################################
+
+	f3ppac_event = 0;
 
 	int32_t addr;
 	//Make sure V1270N opened OK!
@@ -79,6 +128,26 @@ INT f3_ppac_init(int32_t BHandle)
 	sleep(1);
 
 
+//########################      Passive record of new odb tree  ######################################
+
+    statusp = db_open_record(hDbp, hKeyp, eq_bline, sizeof(BEAMLINE_STATS_ONLY), MODE_WRITE, NULL, NULL);
+      if (statusp == DB_NO_ACCESS) {
+
+        statusp = db_set_mode(hDbp, hKeyp, MODE_READ | MODE_WRITE | MODE_DELETE, TRUE);
+         if (statusp != DB_SUCCESS)
+            cm_msg(MERROR, "register_equipment", "Cannot change access mode for record \'%s\', error %d", strp, statusp);
+         else
+            cm_msg(MINFO, "register_equipment", "Recovered access mode for record \'%s\'", strp);
+         statusp = db_open_record(hDbp, hKeyp, eq_bline, sizeof(BEAMLINE_STATS_ONLY), MODE_WRITE, NULL, NULL);
+      }
+      if (statusp != DB_SUCCESS) {
+         cm_msg(MERROR, "register_equipment", "Cannot open statistics record, error %d. Probably other FE is using it", statusp);
+         ss_sleep(3000);
+      }
+
+//#######################################################################################################
+
+
 
 	return SUCCESS;
 }
@@ -87,12 +156,19 @@ INT f3_ppac_exit()
 {
 	cvt_V1190_module_reset(&F3_PPAC_type);
 	cvt_V1190_close(&F3_PPAC_type);
+
+        eq_bline->events_per_sec = 0;
+        eq_bline->data_per_sec = 0;
+        eq_bline->events = 0;
+
 	return SUCCESS;
 
 }
 
 INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
 {
+
+	tick_p = ss_millitime();
 
 	INT16 window_width=ts->f3_ppac_window_width/25;
 
@@ -189,6 +265,8 @@ INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT
 int i=0;
 int count=f3_ppac_read_fifo(BHandle, buff, buff_size);
 
+float pdsize= 0.000001*4;
+
 //printf("--------------- %d %d\n", nb*4, count);
 
 bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
@@ -202,9 +280,35 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 				{
 					UINT32 event_count= CVT_V1190_GET_GLB_HDR_EVENT_COUNT(data);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
+					f3ppac_event = event_count;
 					*pdata++=event_count;
-					//if(event_count%1000 == 0)
-					//printf("F3PPAC_Global_header; event_count:%d\n", event_count);
+
+                                        tok_p = ss_millitime();           // custom space def
+
+                                                        // ################
+                                        eq_bline = &beamlineonly[0].scal3;
+                                        eq_bline->events = event_count;
+
+                                        intv_p = (float)(tok_p - tick_p)/1000.;
+
+                                        if(intv_p > 3.){
+
+
+                                	        ediff_p = event_count - p_event_count_tmp;
+                                                erate_p = (float)ediff_p/(float)intv_p;
+                                                drate_p = pdsize*ediff_p*(float)(5.)/intv_p;
+
+                                                eq_bline->events_per_sec = erate_p;
+                                                eq_bline->data_per_sec = drate_p;
+
+                                                p_event_count_tmp = event_count;
+                                                tick_p = ss_millitime();
+
+                                        }       // ############## custom space def
+
+
+
+
 				} break;
 
 			case CVT_V1190_TDC_MEASURE:
@@ -213,7 +317,10 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
 					*pdata++=channel;
 					*pdata++=measure;
-					
+
+					if(channel < uchannel_tmp) uchannel = uchannel_tmp;
+					uchannel_tmp = channel;
+
 					printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 

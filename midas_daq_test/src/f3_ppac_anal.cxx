@@ -56,6 +56,7 @@ static TH1D *hPYDIFFTDCHists_raw;
 static TH2D *hP2DTDCHists_raw;
 
 static TH1D *hPXDIFFTDCHists_cor;
+static TH2D *hP2DADCARYABHists_raw;
 
 int first_Call_chks_arya;
 
@@ -78,7 +79,7 @@ INT F3_PPAC_TDC_INIT(void)
    hP2DTDCHists_raw = h2_book<TH2D>("F3 2D", "F3 2D plot", 1000, -4000, 4000, 1000, -4000, 4000);
 
 	hPXDIFFTDCHists_cor = h1_book<TH1D>("F3 X COR", "F3 X COR", 250, -50, 50);
-
+	hP2DADCARYABHists_raw = h2_book<TH2D>("Silicon Array A","Silicon Array A", 16, 0, 16, 100, 0, 5000);
 
 	first_Call_chks_arya = 1;
 
@@ -213,6 +214,7 @@ for(int i=0; i < 16; i++) if(ADC_arya_value[i] > 300 && ADC_arya_value[i] < 700)
  if (tdc_value[1]+tdc_value[2]-2.*tdc_value[0]>2700 && tdc_value[3]+tdc_value[4]-2.*tdc_value[0] > 2700 && tdc_value[1]+tdc_value[2]-2.*tdc_value[0] < 3200 && tdc_value[3]+tdc_value[4]-2.*tdc_value[0] < 3200 && logic)hPXDIFFTDCHists_cor->Fill(tdc_value[1]*0.0153-tdc_value[2]*0.0153,1);
 
 
+			for(int i=0; i < 16; i++)  if(ADC_arya_value[i]>0) hP2DADCARYABHists_raw->Fill(i,ADC_arya_value[i], 1);
 
    return SUCCESS;
 }

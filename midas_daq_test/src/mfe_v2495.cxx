@@ -52,11 +52,13 @@ int srate;
 
 uint32_t jj = 0;
 uint32_t f1ppac_event_tmp0 = 0;
+uint32_t f3ppac_event_tmp0 = 0;
 uint32_t silicon_ary_event_tmp0 = 0;
 
 uint32_t Counters_tmp=0;
 uint32_t Counters_tmp1=0;
 uint32_t Counters_tmp2=0;
+uint32_t Counters_tmp3=0;
 uint32_t Counters_recount=0;
 uint32_t Counters_recount1=0;
 uint32_t Counters_recount2=0;
@@ -90,6 +92,7 @@ uint32_t u_detector_triggered;
 
 extern uint32_t silicon_ary_event;
 extern uint32_t f1ppac_event;
+extern uint32_t f3ppac_event;
 uint64_t TimeTag;
 uint64_t TimeTag_tmp=0;
 INT v2495_init(int32_t BHandle2)
@@ -151,7 +154,7 @@ INT v2495_init(int32_t BHandle2)
 		      eq_scal->total_events_sent2 = 0;
 		      eq_scal->total_events_per_sec2 = 0;
 		      eq_scal->livetime2 = 0;
-
+		      eq_scal->livetime3 = 0;
 
 //#####################################################################################
 
@@ -267,6 +270,7 @@ INT v2495_exit(int32_t Bhandle)
 		      eq_scal->total_events_sent2 = 0;
 		      eq_scal->total_events_per_sec2 = 0;
 		      eq_scal->livetime2 = 0;
+		      eq_scal->livetime3 = 0;
 
 	//cvt_V1190_module_reset(&F3_PPAC_type);
 
@@ -540,7 +544,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 	int32_t pcount, pcount64;
 	int ChEnable[5];
 
-	float ltmp1, ltmp2;
+	float ltmp1, ltmp2, ltmp3;
 
 	for (i = 0; i < 160; i++) Counters[i] = Counters64[i] = 0.;
 
@@ -611,6 +615,10 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 				else if(Counters[66]-Counters_tmp1 == 0) ltmp2 = -1;		// error inf LT
 				else ltmp2 = -2;						// error TMP mallFth or NAN
 
+                                if(Counters[68]-Counters_tmp3 > 0) ltmp3 = (float)(f3ppac_event-f3ppac_event_tmp0)/(Counters[68]-Counters_tmp3);
+                                else if(Counters[68]-Counters_tmp3 == 0) ltmp3 = -1;            // error inf LT
+                                else ltmp3 = -2;
+
 
 				eq_scal=&beamline[0].scal;
 				eq_scal->total_events_sent = Counters[65];
@@ -619,6 +627,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 				eq_scal->total_events_sent2 = TT100;
 				eq_scal->total_events_per_sec2 = Counters_recount2; // event rate for the Down Scaled,  Beamline trigger
 				eq_scal->livetime2 = ltmp2;
+				eq_scal->livetime3 = ltmp3;
 
 		//}
 
@@ -649,7 +658,9 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 			Counters_tmp = Counters[65];
 			Counters_tmp1 = Counters[66];
 			Counters_tmp2 = Counters[67];
+			Counters_tmp3 = Counters[68];
 			f1ppac_event_tmp0 = f1ppac_event;
+			f3ppac_event_tmp0 = f3ppac_event;
 			silicon_ary_event_tmp0 = silicon_ary_event;
 
 			GCOUNT_tmp=GCOUNT;
