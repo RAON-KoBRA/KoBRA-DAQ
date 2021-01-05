@@ -40,6 +40,7 @@ uint32_t vme_base_address1 = 0x3210;
 
 DWORD stick, stok;
 
+
 // timetag coordinates
 
 int logi = 0;
@@ -59,12 +60,17 @@ uint32_t Counters_tmp=0;
 uint32_t Counters_tmp1=0;
 uint32_t Counters_tmp2=0;
 uint32_t Counters_tmp3=0;
-uint32_t Counters_recount=0;
-uint32_t Counters_recount1=0;
-uint32_t Counters_recount2=0;
+float Counters_recount=0;
+float Counters_recount1=0;
+float Counters_recount2=0;
+
+//extern uint16_t sil_or_logic;
+//extern uint16_t ppa_or_logic;
+extern uint32_t OR_COUNT;
+uint32_t OR_COUNT_tmp; 
 
 float live_time; 
-double sintv;
+float sintv, ediff_fp, ediff2_fp;
 
 uint32_t ddata,dbuf,djj;
 char str[256],str1[128];
@@ -80,8 +86,11 @@ BEAMLINE_STATS *eq_scal;
 INT status = 0;
 BEAMLINE *eqr;
 
+int buff_size_intv_f24;
+
 int icc = 0;
 uint64_t TT100,GCOUNT,GCOUNT_tmp;
+int32_t pcount, pcount64;
 uint64_t TT100_tmp=0;
 double rat1,rat2,rat3,rat0;
 double rat11,rat12,rat13,rat10;
@@ -198,7 +207,7 @@ INT v2495_init(int32_t BHandle2)
 		//PLUProgram(&des);
 	unsigned int channelenable;
 
-        channelenable = 15;
+        channelenable = 31;
         ret_2495 = CAEN_PLU_WriteReg(BHandle2, 0x1028, channelenable);
         printf("FW2495SC ch of D slot ch 1 enable %u\n", channelenable);
 
@@ -541,7 +550,6 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 	int Time_Tag, mask_en, cnt64_en, time64_en, ports;
 
 	uint32_t Counters[160], Counters64[160];
-	int32_t pcount, pcount64;
 	int ChEnable[5];
 
 	float ltmp1, ltmp2, ltmp3;
@@ -593,7 +601,7 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 	jj++;
 	TT100 = Counters[64] + Counters64[64]*pow(2,32);
-	GCOUNT = Counters[67] + Counters64[67]*pow(2,32);
+	GCOUNT = Counters[68] + Counters64[68]*pow(2,32);
 	Counters_recount1 = Counters[67]-Counters_tmp;
 
 	beamline_triggered = Counters[65];
@@ -607,22 +615,25 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 
 		//if(jj%2 == 0){
 
-				if(Counters[67]-Counters_tmp2 > 0) ltmp1 = (float)(f1ppac_event-f1ppac_event_tmp0)/(Counters[67]-Counters_tmp2);
-				else if(Counters[67]-Counters_tmp2 == 0) ltmp1 = -1;		// error inf LT
+
+				
+
+				if(Counters[68]-Counters_tmp3 > 0) ltmp1 = (float)(OR_COUNT-OR_COUNT_tmp)/(Counters[68]-Counters_tmp3);
+				else if(Counters[68]-Counters_tmp3 == 0) ltmp1 = -1;		// error inf LT
 				else ltmp1 = -2;						// error TMP mallFth or NAN
 
 				if(Counters[66]-Counters_tmp1 > 0) ltmp2 = (float)(silicon_ary_event-silicon_ary_event_tmp0)/(Counters[66]-Counters_tmp1);
 				else if(Counters[66]-Counters_tmp1 == 0) ltmp2 = -1;		// error inf LT
 				else ltmp2 = -2;						// error TMP mallFth or NAN
 
-                                if(Counters[68]-Counters_tmp3 > 0) ltmp3 = (float)(f3ppac_event-f3ppac_event_tmp0)/(Counters[68]-Counters_tmp3);
-                                else if(Counters[68]-Counters_tmp3 == 0) ltmp3 = -1;            // error inf LT
+                                if(Counters[67]-Counters_tmp2 > 0) ltmp3 = (float)(f3ppac_event-f3ppac_event_tmp0)/(Counters[67]-Counters_tmp2);
+                                else if(Counters[67]-Counters_tmp2 == 0) ltmp3 = -1;            // error inf LT
                                 else ltmp3 = -2;
 
 
 				eq_scal=&beamline[0].scal;
 				eq_scal->total_events_sent = Counters[65];
-				eq_scal->total_events_per_sec = (double)Counters_recount;	// event rate for the Beamline trigger
+				eq_scal->total_events_per_sec = Counters_recount;	// event rate for the Beamline trigger
 				eq_scal->livetime = ltmp1; //
 				eq_scal->total_events_sent2 = TT100;
 				eq_scal->total_events_per_sec2 = Counters_recount2; // event rate for the Down Scaled,  Beamline trigger
@@ -643,17 +654,23 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 	//	*pdata++=Counters64[67];
 
 		//##############################################################################
-
-
+		buff_size_intv_f24 += 2;
+		
 		stok = ss_millitime();
-		sintv = (double)(stok - stick)/1000.;
+		sintv = (float)(stok - stick)/1000.;
 
-		if(sintv > 2.){//reset per 3 sec.
+		if(sintv > 3.){//reset per 3 sec.
 
+			
+			// ediff_fp = Counters[67]-Counters_tmp2;
+                       // Counters_recount2 = ediff_fp/sintv;
 
+			
+			//ediff2_fp = Counters[65]-Counters_tmp;
+			//Counters_recount2 = ediff2_fp/sintv;
 
-			Counters_recount = (double)(Counters[65]-Counters_tmp)/sintv;
-			Counters_recount2 = (double)(Counters[67]-Counters_tmp2)/sintv;
+			Counters_recount = (float)(Counters[65]-Counters_tmp)/sintv;
+			Counters_recount2 = (float)(Counters[67]-Counters_tmp2)/sintv;
 
 			Counters_tmp = Counters[65];
 			Counters_tmp1 = Counters[66];
@@ -661,11 +678,17 @@ INT v2495_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT o
 			Counters_tmp3 = Counters[68];
 			f1ppac_event_tmp0 = f1ppac_event;
 			f3ppac_event_tmp0 = f3ppac_event;
+			OR_COUNT_tmp = OR_COUNT;
 			silicon_ary_event_tmp0 = silicon_ary_event;
 
 			GCOUNT_tmp=GCOUNT;
 			//TT100_tmp = TT100;
 			stick = ss_millitime();
+
+		if(OR_COUNT > 8*pow(2,31)) OR_COUNT = 0;
+		if(silicon_ary_event > 8*pow(2,31)) silicon_ary_event = 0;
+		if(f1ppac_event > 8*pow(2,31)) f1ppac_event = 0;
+
 		}
 
 	}
@@ -677,6 +700,7 @@ bk_close(pevent, pdata);
 
 return bk_size(pevent);
 }
+
 
 
 

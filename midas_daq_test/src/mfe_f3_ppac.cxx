@@ -25,6 +25,8 @@ static cvt_V1190_data F3_PPAC_type;
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
 extern uint64_t GCOUNT;
+extern int32_t pcount, pcount64;
+//uint16_t ppa_or_logic;
 
 float erate_p, drate_p, intv_p, ediff_p;
 uint32_t p_event_count_tmp;
@@ -41,9 +43,14 @@ BEAMLINEONLY *eqp;
 HNDLE hDbp = 1;
 HNDLE hKeyp;
 
-DWORD tick_p, tok_p;
+//DWORD tick_p, tok_p;
+extern float sintv;
 
 char strp[256];
+
+int buff_size_intv_f3p, buff_size_intv_bl, buff_size_intv_bl_c, buff_size_intv_f3p_c;
+extern int buff_size_intv_f2p, buff_size_intv_f1p, buff_size_intv_f3s, buff_size_intv_f24;
+extern int buff_size_intv_f2p_c, buff_size_intv_f1p_c, buff_size_intv_f3s_c, buff_size_intv_f24_c;
 
 
 INT f3_ppac_init(int32_t BHandle)
@@ -168,7 +175,7 @@ INT f3_ppac_exit()
 INT f3_ppac_begin(INT run_number, char *error, TRIGGER_SETTINGS *ts)
 {
 
-	tick_p = ss_millitime();
+	//tick_p = ss_millitime();
 
 	INT16 window_width=ts->f3_ppac_window_width/25;
 
@@ -265,7 +272,8 @@ INT f3_ppac_read_event(int32_t BHandle, const char *bank_name, char *pevent, INT
 int i=0;
 int count=f3_ppac_read_fifo(BHandle, buff, buff_size);
 
-float pdsize= 0.000001*4;
+float pdsize = 1.e-6*4.;
+float cdsize = 1.e-6;
 
 //printf("--------------- %d %d\n", nb*4, count);
 
@@ -282,27 +290,35 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 					f3ppac_event = event_count;
 					*pdata++=event_count;
+					printf("F3PPAC event_count:%i ",event_count);
+                                        //tok_p = ss_millitime();           // custom space def
 
-                                        tok_p = ss_millitime();           // custom space def
+					buff_size_intv_f3p++;
+					buff_size_intv_f3p_c += 6;
 
                                                         // ################
                                         eq_bline = &beamlineonly[0].scal3;
                                         eq_bline->events = event_count;
 
-                                        intv_p = (float)(tok_p - tick_p)/1000.;
+                                       // intv_p = (float)(tok_p - tick_p)/1000.;
 
-                                        if(intv_p > 3.){
+                                        if(sintv > 3.){
 
+						buff_size_intv_bl = buff_size_intv_f3p + buff_size_intv_f2p + buff_size_intv_f1p + buff_size_intv_f3s + buff_size_intv_f24;
+						buff_size_intv_bl_c = buff_size_intv_f3p_c + buff_size_intv_f2p_c + buff_size_intv_f1p_c + buff_size_intv_f3s_c + buff_size_intv_f24_c;
 
                                 	        ediff_p = event_count - p_event_count_tmp;
-                                                erate_p = (float)ediff_p/(float)intv_p;
-                                                drate_p = pdsize*ediff_p*(float)(5.)/intv_p;
+                                                erate_p = (float)ediff_p/(float)sintv;
+                                                drate_p = (pdsize*(float)buff_size_intv_bl + cdsize*(float)buff_size_intv_bl_c)/(float)sintv;
 
                                                 eq_bline->events_per_sec = erate_p;
                                                 eq_bline->data_per_sec = drate_p;
 
                                                 p_event_count_tmp = event_count;
-                                                tick_p = ss_millitime();
+
+						buff_size_intv_f3p = buff_size_intv_f2p = buff_size_intv_f1p = buff_size_intv_f3s = buff_size_intv_f24 = 0;
+						buff_size_intv_f3p_c = buff_size_intv_f2p_c = buff_size_intv_f1p_c = buff_size_intv_f3s_c = buff_size_intv_f24_c = 0;
+                                               // tick_p = ss_millitime();
 
                                         }       // ############## custom space def
 
@@ -318,10 +334,13 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					*pdata++=channel;
 					*pdata++=measure;
 
+					buff_size_intv_f3p += 2;
+					buff_size_intv_f3p_c += 2;
+
 					if(channel < uchannel_tmp) uchannel = uchannel_tmp;
 					uchannel_tmp = channel;
 
-					printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
+					//printf("F3PPAC_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 
 			case CVT_V1190_GLOBAL_TRIGGER_TIME:
@@ -337,7 +356,14 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					*pdata++=GCOUNT;
 					*pdata++=f3_pp_time_tag;
 					*pdata++=global_time;
+					*pdata++=pcount;
+					*pdata++=pcount64;
 					//printf("F3PPAC_Global_time_tag:%d, u_time:%11f\n", global_time, (f3_pp_time_tag|global_time)*800e-9);
+					printf("GCOUNT:%u, pcount:%u, pcount64:%u, buffsize:%d \n", GCOUNT, pcount, pcount64,buff_size);
+
+					buff_size_intv_f3p += 5;
+					buff_size_intv_f3p_c += 5;
+
 				} break;
 
 			default:
@@ -353,3 +379,4 @@ bk_close(pevent, pdata);
 
 return bk_size(pevent);
 }
+

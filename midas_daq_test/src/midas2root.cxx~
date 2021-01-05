@@ -206,12 +206,12 @@ int main(int argc, char** argv)
 				}
 				if(tmp_eventid1!=eventid1)//to skip dulicated event number				
 				{
-				  fTree->Fill();
+					fTree->Fill();
 					tmp_eventid1 = eventid1;
 					for(int i=0; i<32; i++)
 						{
                                                 outfile2 << tdc_value1[i] << "\t";
-						//tdc_value1[i] = 0;
+						tdc_value1[i] = 0;
 						//printf("TDC ch;%d, Value;%d \n", i, tdc_value1[i]);
 						}
                                         outfile2 << "\n";
@@ -278,8 +278,8 @@ int main(int argc, char** argv)
 			if(event.FindBank(fBank3, &bankLength3, &bankType3, &pdata3))
 			{
 				printf("silicon ======================================%i \n",bankLength3);
-			if(bankLength3<70)
-			   {
+			//if(bankLength1>6)
+			  // {
 				for(int i=0; i<bankLength3; i++)
 				{
 					data3[i]=((uint32_t*)pdata3)[i];	
@@ -304,17 +304,17 @@ int main(int argc, char** argv)
 					      //adc_channel[tmp_ch] = tmp_ch;
 					      adc_value[(i+1)/2-1] = data3[i];
 					      printf("silicon === adc value %d \n", adc_value[(i+1)/2-1]);
-					      //adc_value[(i+1)/2-1] = (data3[i]-pedestal[data3[i-1]]-y_inter_indiv[data3[i-1]])/slope_indiv[data3[i-1]]*slope_indiv[32]+y_inter_indiv[32];
-					      //printf("silicon === corrected adc value %d slope %f\n", adc_value[(i+1)/2-1],slope_indiv[32]);
+					      adc_value[(i+1)/2-1] = (data3[i]-pedestal[data3[i-1]]-y_inter_indiv[data3[i-1]])/slope_indiv[data3[i-1]]*slope_indiv[32]+y_inter_indiv[32];
+					      printf("silicon === corrected adc value %d slope %f\n", adc_value[(i+1)/2-1],slope_indiv[32]);
 					      adc_channel[(i+1)/2-1] = data3[i-1];
-					   }
+					    }
 					}
-					else if (i == bankLength3-1)
+					else if (i == bankLength3-4)
 					  {
 					    GCOUNT2 = data3[bankLength3-4];
 					    eventid3 = data3[bankLength3-3];
-					    pcount2 = data3[bankLength3-2];
-					    pcount642 = data3[bankLength3-1];
+					    pcount2 = data1[i-2];
+					    pcount642 = data1[i-1];
 					  }
 				}
 				if(tmp_eventid3==eventid3)//check if event id is duplicated
@@ -339,10 +339,9 @@ int main(int argc, char** argv)
 					channel1[i] = -999;
 					tdc_value1[i] = -999;
 				}
-			   }
-			 printf("Events analyzed silicon === %d, GCOUNT2 = %d, pcount2 = %d, pcount642=%d\n", eventid3,GCOUNT2,pcount2,pcount642);
+			      //}
 			}
-			else{}//printf("Bank name3 %s is not listed\n", fBank3);}
+			else{}//printf("Bank name3 %s is not listed\n", fBank1);}
 		}
 	}
 	printf("======================================Total skipped silicon event %d \n", skippedsil);

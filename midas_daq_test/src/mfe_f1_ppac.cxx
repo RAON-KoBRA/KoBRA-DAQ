@@ -26,6 +26,8 @@ extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
 uint32_t f1ppac_event;
 
+int buff_size_intv_f1p, buff_size_intv_f1p_c;
+
 extern "C"{
 
 UINT32 f1_pp_f_time;
@@ -209,6 +211,10 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 					f1ppac_event = event_count;
 					*pdata++=event_count;
+
+					buff_size_intv_f1p++;
+					buff_size_intv_f1p_c += 6;
+
 				} break;
 
 			case CVT_V1190_TDC_MEASURE:
@@ -217,7 +223,10 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					UINT32 measure= CVT_V1290_GET_TDC_HDR_MEASURE(data);
 					*pdata++=channel;
 					*pdata++=measure;
-					printf("f1_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
+
+					buff_size_intv_f1p += 2;
+					buff_size_intv_f1p_c += 2;
+					//printf("f1_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 				} break;
 
 			case CVT_V1190_GLOBAL_TRIGGER_TIME:
@@ -232,6 +241,10 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 				#endif
 					*pdata++=f1_pp_time_tag;
 					*pdata++=global_time;
+
+
+					buff_size_intv_f1p += 2;
+					buff_size_intv_f1p_c += 2;
 				} break;
 
 			default:

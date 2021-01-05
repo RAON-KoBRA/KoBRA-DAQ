@@ -296,6 +296,7 @@ uint32_t *silicon_arya_buff=NULL;
 uint32_t *silicon_aryb_buff=NULL;
 uint32_t *v2495_buff=NULL;
 
+uint32_t OR_COUNT = 0; 
 
 
 INT frontend_init() {
@@ -603,6 +604,7 @@ INT poll_event(INT source, INT count, BOOL test) {
 	}
 	//printf("Accumulated:%d\n", s_evt);*/
 	uint lam=0;
+	
 
 /*
 	#ifdef USE_PLASTIC_F1
@@ -630,7 +632,8 @@ INT poll_event(INT source, INT count, BOOL test) {
 	#endif
 */
     //    #ifdef USE_PPAC_F3
-	lam=f3_ppac_check_fifo(BHandle) || silicon_arya_check_fifo(BHandle2);
+	lam = f3_ppac_check_fifo(BHandle) || silicon_arya_check_fifo(BHandle2);
+	if(!lam == 0) OR_COUNT++;
 //	#endif
 /*        
         #ifdef USE_PPAC_F1
@@ -724,3 +727,4 @@ INT read_trigger_event(char *pevent, INT off) {
 
 	return bk_size(pevent);
 }
+

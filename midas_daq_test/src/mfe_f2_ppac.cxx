@@ -25,7 +25,7 @@ UINT64 f2_pp_time_tag;
 extern uint32_t time_stamp1;
 extern uint32_t time_stamp2;
 
-
+int buff_size_intv_f2p, buff_size_intv_f2p_c;
 
 INT f2_ppac_init(int32_t BHandle)
 {
@@ -200,6 +200,9 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 					//UINT32 geo= CVT_V1190_GET_GLB_HDR_GEO(data);
 
 					*pdata++=event_count;
+
+					buff_size_intv_f2p++;
+					buff_size_intv_f2p_c += 6;
 					//printf("f2_Global_header; event_count:%d\n", event_count);
 				} break;
 
@@ -210,6 +213,9 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 
 						*pdata++=channel;
 						*pdata++=measure;
+
+						buff_size_intv_f2p += 2;
+						buff_size_intv_f2p_c += 2;
 						//printf("f2_TDC measurement; channel:%d, measurement:%05f\n", channel, measure*0.025);
 					} break;
 
@@ -221,6 +227,9 @@ bk_create(pevent, bank_name, TID_DWORD, (void**)&pdata);
 
 					*pdata++=time_stamp2;
 					*pdata++=time_stamp1;
+
+					buff_size_intv_f2p += 2;
+					buff_size_intv_f2p_c += 2;
 					//printf("f2_Global_time_tag:%d, u_time:%11f\n", time_stamp1, (time_stamp2|time_stamp1)*800e-9);
 				} break;
 

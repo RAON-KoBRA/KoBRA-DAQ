@@ -48,7 +48,7 @@ uint64_t TimeTag_ary_tmpb;
 
 uint32_t u_detector_event_tmpb;
 uint32_t Counters_tmp_udetectorb;
-
+ int buff_size_intv_us2;
 
 int iiab ,iibb, iicb;
 
@@ -292,7 +292,8 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						//printf("(ARY B ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
 						//printf("external trigger from scaler(ary b u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary b u_detector); %u\n", clock_number_lower);
-						
+						buff_size_intv_us2 += 2;
+
 						iiab++;
 
 					} break;
@@ -310,6 +311,9 @@ INT silicon_aryb_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						//printf("external trigger from scaler(ary b u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary b u_detector); %u\n", clock_number_lower);
 						//printf("external clock_number_upper from scaler(ary b u_detector); %u\n", clock_number_upper);
+
+						buff_size_intv_us2++;
+
 						iibb++;
 
 					} break;

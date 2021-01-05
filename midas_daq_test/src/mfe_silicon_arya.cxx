@@ -38,12 +38,15 @@ HNDLE hKeya;
 
 DWORD tick, tok;
 
+//extern float sintv;
+
 char stra[256];
 
 extern uint32_t user_channel_b;
 uint32_t user_channel_a;
 uint32_t mcst_reg_order;
 uint32_t silicon_ary_event;
+//uint16_t sil_or_logic;
 
 static cvt_V792_data SILICON_arya_type;
 
@@ -57,6 +60,7 @@ extern uint32_t u_detector_triggered;
 extern uint64_t TimeTag;
 uint64_t TimeTag_ary_tmp;
 extern uint64_t GCOUNT;
+extern int32_t pcount, pcount64;
 
 uint32_t u_detector_event_tmp;
 uint32_t Counters_tmp_udetector;
@@ -66,6 +70,9 @@ uint32_t jjs3 = 0;
 
 float erate,drate,intv, ediff;
 uint32_t event_count_tmp;
+
+int buff_size_intv, buff_size_intv_us1;
+extern int buff_size_intv_us2;
 
 INT silicon_arya_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
 {
@@ -360,7 +367,7 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 	int i;
 	uint32_t event_count;
 
-	float pdsize= 0.000001*4;		// size of data buffer per event channel
+	float pdsize = 1.e-6*4.;		// size of data buffer per event channel
 
 	//int qcount;
 	//CAENVME_BLTReadWait(BHandle, &qcount);
@@ -393,14 +400,16 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						UINT32 measure= CVT_V785_GET_DATUM_ADC(data);
 						UINT32 UV=CVT_V785_GET_DATUM_UN(data);
 						UINT32 OV=CVT_V785_GET_DATUM_OV(data);
-						if(channel == 1) {ch_check++;}
-						if(ch_check > 1) {/*printf("ADC over counting,, ch_check = %d\n",ch_check);*/ break;}
+						//if(channel == 1) {ch_check++;}
+						//if(ch_check > 1) {/*printf("ADC over counting,, ch_check = %d\n",ch_check);*/ break;}
 						*pdata++=channel;
 						*pdata++=measure;
 						//tmp_channel = channel;
-						//printf("(S3 ARY A ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
+						printf("(S3 ARY A ADC) measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
 						//printf("external trigger from scaler(ary a u_detector); %u\n", u_detector_triggered);
 						//printf("external clock_number_lower from scaler(ary a u_detector); %u\n", clock_number_lower);
+
+						buff_size_intv_us1 += 2;
 
 						iia++;
 
@@ -413,28 +422,34 @@ INT silicon_arya_read_event(int32_t BHandle, const char *bank_name, char *pevent
 						user_channel_a = CVT_QTP_GET_HDR_CH_COUNT(data);
 						*pdata++=GCOUNT;
 						*pdata++=event_count;
-						
+						*pdata++=pcount;
+					        *pdata++=pcount64;
+						printf("User Silicon event count:%u, GCOUNT:%u, pcount:%u pcount64:%u\n",event_count, GCOUNT, pcount, pcount64);
 
 						tok = ss_millitime();		// custom space def	
-			
+						buff_size_intv_us1 += 4;
+
 							// ################
 						eq_user = &detector[0].dstat;
 						eq_user->events = event_count;
+
 
 						silicon_ary_event = event_count;
 						intv = (float)(tok - tick)/1000.;
 
 						if(intv > 3.){
 
-							
+							buff_size_intv = buff_size_intv_us1 + buff_size_intv_us2;
+
 							ediff = event_count - event_count_tmp;
 							erate = (float)ediff/(float)intv;
-							drate = pdsize*ediff*(float)(user_channel_a + user_channel_b)/intv;
+							drate = pdsize*(float)buff_size_intv/(float)intv;
 
 							eq_user->events_per_sec = erate;
 							eq_user->data_per_sec = drate;
 							
-							event_count_tmp = event_count;		
+							event_count_tmp = event_count;
+							buff_size_intv_us1 = buff_size_intv_us2 = 0;		
 							tick = ss_millitime();
 
 						}	// ############## custom space def

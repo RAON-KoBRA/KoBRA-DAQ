@@ -104,7 +104,7 @@ INT F1_TDC(EVENT_HEADER *pheader, void *pevent)
    /* look for bank, return if not present */
    bk_size = bk_locate(pevent, BANK_NAME_F1PPAC, &pdata);
    if (!bk_size) {
-      printf("no data\n");
+     // printf("no data\n");
       return 1;
    }
 
@@ -135,12 +135,12 @@ INT F1_TDC(EVENT_HEADER *pheader, void *pevent)
    }
 
 #if 1
-   printf("F1PPAC ===============================%d\n", bk_size);
+ /*  printf("F1PPAC ===============================%d\n", bk_size);
    	 printf("event_count: %d\n",event_count);
    	 for(int i=0; i<32; i++){
 	 if(tdc_value[i]*0.025>0)printf("channel:%d, measure:%8f\n", i, tdc_value[i]*0.025);
 	 }
-   	 printf("global time: %12f\n", global_time_stamp*800e-9);
+   	 printf("global time: %12f\n", global_time_stamp*800e-9);*/
 #endif
 
 

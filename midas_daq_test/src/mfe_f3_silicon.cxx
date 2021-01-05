@@ -32,6 +32,7 @@ static cvt_V792_data F3_SILICON_type;
 uint32_t addr;
 CVErrorCodes ret;
 
+int buff_size_intv_f3s;
 
 //extern "C" {
 INT f3_silicon_init(int32_t BHandle, TRIGGER_SETTINGS *ts)
@@ -186,8 +187,10 @@ INT f3_silicon_read_event(int32_t BHandle, const char *bank_name, char *pevent, 
 						UINT32 OV=CVT_V785_GET_DATUM_OV(data);
 						*pdata++=channel;
 						*pdata++=measure;
+
+						buff_size_intv_f3s += 2;
 						//tmp_channel = channel;
-						printf("f3_silicon measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
+						//printf("f3_silicon measurement; uv:%d, ov:%d, channel:%d, measurement:%d, \n", UV, OV, channel, measure);
 					} break;
 
 
@@ -195,7 +198,9 @@ INT f3_silicon_read_event(int32_t BHandle, const char *bank_name, char *pevent, 
 					{
 						UINT32 event_count= CVT_QTP_GET_EOB_EVENT_COUNT(data);
 						*pdata++=event_count;
-						printf("f3_silicon_EOB; event_count:%d\n", event_count);
+
+						buff_size_intv_f3s++;
+						//printf("f3_silicon_EOB; event_count:%d\n", event_count);
 					} break;
 
 			default:

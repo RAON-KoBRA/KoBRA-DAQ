@@ -77,7 +77,7 @@ BEAMLINE beamline[] = {
     TRUE,                   /* enabled */
     RO_RUNNING |
     RO_ODB,             /* read only when running */
-    2000,
+    1000,
     0,                      /* stop run after this event limit */
     0,                      /* number of sub events */
     0,                      /* don't log history */

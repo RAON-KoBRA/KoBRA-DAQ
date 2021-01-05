@@ -148,10 +148,10 @@ INT F3_sili_ADC_INIT(void)
 		     	myfile>>line_ch>>line_ped;	
 			pedestal[line_ch] = line_ped; 
 		    	//printf( "pedestal ch, ped= %d %f \n",line_ch, line_ped);
-			printf( "pedestal ch, ped = %d %f\n",line_ch, pedestal[line_ch]);
+			//printf( "pedestal ch, ped = %d %f\n",line_ch, pedestal[line_ch]);
 		   }
 	    myfile.close();
-	printf("pedestal data open\n");
+	//printf("pedestal data open\n");
 	}
 	else printf("no pdestal txt");
 
@@ -170,10 +170,10 @@ INT F3_sili_ADC_INIT(void)
 			y_inter_indiv[line_ch] = line_interc; 
 			slope_indiv[line_ch] = line_slope;
 		    	//printf( "pedestal ch, ped= %d %f \n",line_ch, line_ped);
-			printf( "gain ch, y_inter, slope = %d %f %f\n",line_ch, y_inter_indiv[line_ch],slope_indiv[line_ch]);
+			//printf( "gain ch, y_inter, slope = %d %f %f\n",line_ch, y_inter_indiv[line_ch],slope_indiv[line_ch]);
 		   }
 	    myfileg.close();
-	printf("gain data open\n");
+	//printf("gain data open\n");
 	}
 	else printf("no gain txt");
 
@@ -510,7 +510,7 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
    /* look for bank, return if not present */
    bk_size = bk_locate(pevent, BANK_NAME_F3SILICON, &pdata);
    if (!bk_size) {
-      printf("no data\n");
+      //printf("no data\n");
       return 1;
    }
 /*
@@ -555,7 +555,7 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 //   memset(tdc_value, 0, sizeof(int32_t)*16);
    memset(ADC_value, 0, sizeof(int32_t)*N_ADC_f3_silicon);
 
-   printf("F3SILICON ====================== %d\n", bk_size);
+   //printf("F3SILICON ====================== %d\n", bk_size);
 
    if(first_Call_chk)
    {
@@ -572,7 +572,7 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 		   if (channel>N_ADC_f3_silicon)
 		   {
 			//dump=channel;
-			printf("channel number from event_counter = %d\n", channel);
+			//printf("channel number from event_counter = %d\n", channel);
 		    	channel=*pdata++; i++;
 			//*pdata_cal++=channel;
 		   }	
@@ -581,17 +581,17 @@ INT F3_sili_ADC(EVENT_HEADER *pheader, void *pevent)
 		   ADC_value[channel]=*pdata++; i++;
 			*pdata_cal++=channel;
 			*pdata_cal++=ADC_value[channel];
-		   printf("channel:%d, ADC value:%d\n", channel, ADC_value[channel]);
+		  // printf("channel:%d, ADC value:%d\n", channel, ADC_value[channel]);
 		   }
 	   }
 
 	   event_count=*pdata++;
 	   *pdata_cal++=event_count;
-	   printf("F3SILICON event_counter =======================%d\n", event_count);
+	  // printf("F3SILICON event_counter =======================%d\n", event_count);
 
 	   char name[256];
            //bk_close(pevent, pdata_cal);
-           printf("F3SILICON cal might be closed =======================\n");
+          // printf("F3SILICON cal might be closed =======================\n");
 	    for(int i=0; i<N_ADC_f3_silicon; i++)
 	     {
 	     	 sprintf(name,  "F3SILICON-%03d", i);

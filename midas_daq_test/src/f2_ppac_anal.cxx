@@ -156,7 +156,7 @@ INT F2_TDC(EVENT_HEADER *pheader, void *pevent)
    /* look for bank, return if not present */
    bk_size = bk_locate(pevent, BANK_NAME_F2PPAC, &pdata);
    if (!bk_size) {
-      printf("no data\n");
+      //printf("no data\n");
       return 1;
    }
 /*
@@ -193,16 +193,16 @@ INT F2_TDC(EVENT_HEADER *pheader, void *pevent)
 	   uint32_t time2=*pdata++; i++;
 	   uint32_t time1=*pdata++; i++;
 	   global_time_stamp=time2|time1;
-	   printf("f2 ppac \n\n%12f, %12f, %12f\n", time2*800e-9, time1*800e-9, global_time_stamp*800e-9);
+	   //printf("f2 ppac \n\n%12f, %12f, %12f\n", time2*800e-9, time1*800e-9, global_time_stamp*800e-9);
    }
 
 #if 1
-   printf("F2PPAC ===============================%d\n", bk_size);
+/*   printf("F2PPAC ===============================%d\n", bk_size);
    	 printf("event_count: %d\n",event_count);
    	 for(int i=0; i<N_TDC_f2_PPAC; i++){
          if(tdc_value[i]*0.025>0)printf("channel:%d, measure:%8f\n", i, tdc_value[i]*0.025);
   	 }
-   	 printf("global time: %12f\n", global_time_stamp*800e-9);
+   	 printf("global time: %12f\n", global_time_stamp*800e-9);*/
 #endif
 
 
@@ -214,7 +214,7 @@ INT F2_TDC(EVENT_HEADER *pheader, void *pevent)
     	 hPTDCHists_raw[i]->Fill(tdc_value[i]*f2_tdc_cali_param.gain, 1);
     }
     if (tdc_value[0]>0 && tdc_value[1]>0 && tdc_value[0]-tdc_value[1]<5000 && tdc_value[0]-tdc_value[1]>-5000 && tdc_value[12]>0) hPXDIFFTDCHists_raw->Fill(tdc_value[0]-tdc_value[1],1);
-    printf("FOR PPAC consistency check one = %d\n", tdc_value[0]-tdc_value[1]);
+    //printf("FOR PPAC consistency check one = %d\n", tdc_value[0]-tdc_value[1]);
 
     if (tdc_value[2]+tdc_value[3]>1000) hPYDIFFTDCHists_raw->Fill(tdc_value[2]-tdc_value[3],1);
 

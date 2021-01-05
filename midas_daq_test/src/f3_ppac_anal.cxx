@@ -54,9 +54,11 @@ static TH1D *hPTDCHists_raw[N_TDC_f3_ppac];
 static TH1D *hPXDIFFTDCHists_raw;
 static TH1D *hPYDIFFTDCHists_raw;
 static TH2D *hP2DTDCHists_raw;
+static TH1D *hPXDIFFTDCHists_raw2;
 
 static TH1D *hPXDIFFTDCHists_cor;
 static TH2D *hP2DADCARYABHists_raw;
+static TH2D *hPXDIFFTDCHists_sum;
 
 int first_Call_chks_arya;
 
@@ -79,7 +81,9 @@ INT F3_PPAC_TDC_INIT(void)
    hP2DTDCHists_raw = h2_book<TH2D>("F3 2D", "F3 2D plot", 1000, -4000, 4000, 1000, -4000, 4000);
 
 	hPXDIFFTDCHists_cor = h1_book<TH1D>("F3 X COR", "F3 X COR", 250, -50, 50);
-	hP2DADCARYABHists_raw = h2_book<TH2D>("Silicon Array A","Silicon Array A", 16, 0, 16, 100, 0, 5000);
+	hPXDIFFTDCHists_sum =  h2_book<TH2D>("F3 2D sum", "F3 2D sum", 300, -400, 200, 300, -400, 200);
+	hPXDIFFTDCHists_raw2 = h1_book<TH1D>("F3 X RAW", "F3 X RAW", 250, -50, 50);
+	hP2DADCARYABHists_raw = h2_book<TH2D>("F3 sili", "F3 sili", 16, 0, 16, 500, 0,5000);
 
 	first_Call_chks_arya = 1;
 
@@ -112,15 +116,16 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
    /* look for bank, return if not present */
    bk_size = bk_locate(pevent, BANK_NAME_F3PPAC, &pdata);
    if (!bk_size) {
-      printf("no data\n");
+      //printf("no data\n");
       return 1;
    }
 
-   int32_t event_count;
+   int32_t event_count, event_count2;
    int32_t channel;
    int32_t tdc_value[N_TDC_f3_ppac];
-   uint64_t global_time_stamp,gcount1;
-
+   uint64_t global_time_stamp,gcount1,gcount2;
+   uint32_t pcount1, pcount641;
+   uint32_t pcount2, pcount642;
    memset(tdc_value, 0, sizeof(int32_t)*N_TDC_f3_ppac);
 
 
@@ -128,31 +133,40 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
 //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
    for(int i=0; i<1; i++){event_count = *pdata++;}
 
-   for (int i=0; i<bk_size-4; )
+   for (int i=0; i<bk_size-6; )
    {
 	   channel=*pdata++; i++;
 	   tdc_value[channel]=*pdata++; i++;
 	  
    }
 
-   for(int i=0; i<3; )
+   for(int i=0; i<5; )
    {
-	 gcount1=*pdata++; i++;
+	   gcount1=*pdata++; i++;
 	   uint32_t time2=*pdata++; i++;
 	   uint32_t time1=*pdata++; i++;
 	   global_time_stamp=time2|time1;
-	 //  printf("\n\n%12f, %12f, %12f\n", time2*800e-9, time1*800e-9, global_time_stamp*800e-9);
+	   pcount1 = *pdata++; i++;
+	   pcount641 = *pdata++; i++;
+	   //printf("f3 global time: %12f, %12f, %12f\n", time2*800e-9, time1*800e-9, global_time_stamp*800e-9);
    }
 
 #if 1
-   printf("F3PPAC ===============================%d\n", bk_size);
-   	 printf("event_count: %d\n",event_count);
-   	 for(int i=0; i<N_TDC_f3_ppac; i++){printf("channel:%d, measure:%8f\n", i, tdc_value[i]*0.025);}
-   	 printf("global time: %12f\n", global_time_stamp*800e-9);
+   //printf("F3PPAC ===============================%d\n", bk_size);
+         printf("Analyzer F3PPAC event_count:%i, GCOUNT:%u, pcount:%u, pcount64:%u \n",event_count, gcount1, pcount1, pcount641);
+   	 //for(int i=0; i<N_TDC_f3_ppac; i++){printf("channel:%d, measure:%8f\n", i, tdc_value[i]*0.025);}
+   	 //printf("f3_3 global time: %12f\n", global_time_stamp*800e-9);
 #endif
 
 
      char name[256];
+
+ if (tdc_value[0]>0 )hPXDIFFTDCHists_raw2->Fill(tdc_value[1]*0.0153-tdc_value[2]*0.0153,1);
+
+
+ hPXDIFFTDCHists_sum->Fill((tdc_value[1]+tdc_value[2]-2.*tdc_value[0])/40., (tdc_value[3]+tdc_value[4]-2.*tdc_value[0])/40., 1);
+
+
 
    for(int i=0; i<N_TDC_f3_ppac; i++)
     {
@@ -175,7 +189,6 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
    int32_t channels_arya;
    int32_t ev_tag1, ev_tag2;
    int32_t ADC_arya_value[N_ADC_arya_silicon];
-   uint64_t gcount2;
 
 //   memset(tdc_value, 0, sizeof(int32_t)*16);
    memset(ADC_arya_value, 0, sizeof(int32_t)*N_ADC_arya_silicon);
@@ -188,7 +201,7 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
 	   first_Call_chks_arya=0;
    }
    if(! first_Call_chks_arya){
-	   for(int i=0; i<bk_size_a; ){
+	   for(int i=0; i<bk_size_a-4; ){
 		   channels_arya=*pdata++; i++;	
 
 		 if(channels_arya<N_ADC_arya_silicon){  
@@ -196,25 +209,33 @@ INT F3_PPAC_TDC(EVENT_HEADER *pheader, void *pevent)
 			//printf("ary a channel:%d, ADC value:%d\n", channels_arya, ADC_arya_value[channels_arya]);
 		}
 		
-		//else{
-		//		ev_tag1 = *pdata++; i++;
-		//		ev_tag2 = *pdata++; i++;
-			
-		//}
-			//gcount2=*pdata++; i++;
-		   
-	   }
+		else{
+				ev_tag1 = *pdata++; i++;
+				ev_tag2 = *pdata++; i++;
+			printf("out of range: %d,  %d \n", ev_tag1, ev_tag2);
+		}
 
+	   }
+	   for(int i=0; i<4; )
+           {
+	   gcount2=*pdata++; i++;
+           event_count2=*pdata++; i++;	
+	   pcount2=*pdata++; i++;
+           pcount642=*pdata++; i++;	
+           }
+           printf("Analyzer ARYA silicon event_count:%i, GCOUNT:%u, pcount:%u, pcount64:%u \n",event_count2, gcount2, pcount2, pcount642);
    }
 
 bool logic = 0;
 
-for(int i=0; i < 16; i++) if(ADC_arya_value[i] > 300 && ADC_arya_value[i] < 700) logic = 1;
+for(int i=0; i < 16; i++) if(ADC_arya_value[i] > 400 && ADC_arya_value[i] < 700) logic = 1;
 
  if (tdc_value[1]+tdc_value[2]-2.*tdc_value[0]>2700 && tdc_value[3]+tdc_value[4]-2.*tdc_value[0] > 2700 && tdc_value[1]+tdc_value[2]-2.*tdc_value[0] < 3200 && tdc_value[3]+tdc_value[4]-2.*tdc_value[0] < 3200 && logic)hPXDIFFTDCHists_cor->Fill(tdc_value[1]*0.0153-tdc_value[2]*0.0153,1);
 
 
-			for(int i=0; i < 16; i++)  if(ADC_arya_value[i]>0) hP2DADCARYABHists_raw->Fill(i,ADC_arya_value[i], 1);
+
+	for(int i=0; i < 16; i++) if(ADC_arya_value[i] > 0 && ADC_arya_value[i] < 5000 ) hP2DADCARYABHists_raw->Fill(i,ADC_arya_value[i], 1);
+			
 
    return SUCCESS;
 }
